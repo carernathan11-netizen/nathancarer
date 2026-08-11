@@ -37,21 +37,7 @@ radial-gradient(circle at 85% 80%, rgba(191, 149, 63, 0.05) 0%, transparent 40%)
 color: var(--text-main);
 overflow-x: hidden;
 min-height: 100vh;
-transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
-}
-
-/* LE SITE SE RETOURNE COMPLÈTEMENT (BOSS FINAL) */
-body.site-flipped {
-transform: rotate(180deg) scale(0.98) !important;
-}
-
-/* RETOURNEMENT SPÉCIFIQUE DES BOUTONS PENDANT LE MODE BOSS */
-.site-flipped button, 
-.site-flipped .btn-action, 
-.site-flipped .nav-btn, 
-.site-flipped .view-mode-btn {
-transform: rotate(180deg) !important;
-transition: transform 1s ease !important;
+transition: width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
 }
 
 /* ANIMATION TREMBLEMENT STANDARD DU SITE */
@@ -98,6 +84,31 @@ transition: transform 1.5s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 1.5s ease !im
 transform: translate(var(--exp-x), var(--exp-y)) rotate(var(--exp-r)) scale(0) !important;
 opacity: 0 !important;
 pointer-events: none !important;
+}
+
+/* --- ANIMATIONS SPÉCIFIQUES LOUISE & ENORA --- */
+/* Louise : Éclatement et reconstruction */
+@keyframes louiseExplodeReconstruct {
+0% { transform: scale(1) rotate(0deg); opacity: 1; filter: none; }
+25% { transform: scale(1.3) rotate(-15deg); filter: drop-shadow(0 0 40px #ff3300) contrast(2); }
+40% { transform: scale(0) rotate(180deg); opacity: 0; }
+70% { transform: scale(1.2) rotate(10deg); opacity: 0.8; filter: drop-shadow(0 0 50px var(--gold-primary)); }
+100% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 25px var(--gold-primary)); }
+}
+
+.louise-anim-active {
+animation: louiseExplodeReconstruct 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+}
+
+/* Enora : Surbrillance et lueur féérique */
+@keyframes enoraGlowGleam {
+0% { box-shadow: 0 0 10px rgba(243, 198, 73, 0.2); transform: scale(1); }
+50% { box-shadow: 0 0 60px #ff00ea, 0 0 100px var(--gold-primary), inset 0 0 30px #ffffff; transform: scale(1.08); border-color: #ffffff; }
+100% { box-shadow: 0 0 35px rgba(243, 198, 73, 0.6); transform: scale(1); }
+}
+
+.enora-anim-active {
+animation: enoraGlowGleam 1.5s ease-in-out infinite alternate !important;
 }
 
 /* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
@@ -362,12 +373,13 @@ opacity: 0;
 }
 }
 
-/* PARTICULES DE CLIC ET FEUX D'ARTIFICE ET OR */
-.sparkle, .firework-particle, .gold-rain-particle {
+/* PARTICULES DE CLIC ET FEUX D'ARTIFICE */
+.sparkle, .firework-particle {
 position: fixed;
 border-radius: 50%;
 pointer-events: none;
 z-index: 999999;
+animation: explodeSparkle 0.8s ease-out forwards;
 }
 
 .sparkle {
@@ -375,25 +387,11 @@ width: 8px;
 height: 8px;
 background: var(--gold-primary);
 box-shadow: 0 0 10px var(--gold-primary);
-animation: explodeSparkle 0.8s ease-out forwards;
 }
 
 @keyframes explodeSparkle {
 0% { transform: translate(0, 0) scale(1); opacity: 1; }
 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
-}
-
-.gold-rain-particle {
-width: 10px;
-height: 10px;
-background: var(--gold-gradient);
-box-shadow: 0 0 15px #ffe600;
-animation: rainDown 2.5s linear forwards;
-}
-
-@keyframes rainDown {
-0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
 }
 
 /* --- HEADER & NAVIGATION --- */
@@ -834,7 +832,7 @@ transition: color 0.3s ease;
 color: var(--gold-primary);
 }
 
-/* --- VIGNETTES ULTRA DESIGN STYLE CARTE POKÉMON COLLECTOR --- */
+/* --- VIGNETTES ULTRA DESIGN & ESPACE L'ÉQUIPE --- */
 .team-hero-banner {
 background: linear-gradient(135deg, rgba(243, 198, 73, 0.15), rgba(10, 10, 14, 0.95));
 border: 2px solid var(--gold-primary);
@@ -866,79 +864,44 @@ animation: shineGlow 4s infinite;
 
 .vignettes-grid {
 display: grid;
-grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 gap: 30px;
 margin-top: 30px;
-perspective: 1200px;
+perspective: 1000px;
 }
 
-/* STYLISATION TYPE CARTE COLLECTOR (POKÉMON RARE) */
 .vignette-card {
-background: linear-gradient(160deg, rgba(30, 30, 45, 0.9) 0%, rgba(12, 12, 18, 0.95) 100%);
-border: 3px solid rgba(243, 198, 73, 0.4);
-border-radius: 22px;
-padding: 22px;
+background: rgba(22, 22, 32, 0.7);
+border: 2px solid var(--glass-border);
+border-radius: 20px;
+padding: 25px;
 text-align: center;
 position: relative;
-transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 cursor: pointer;
 overflow: hidden;
-backdrop-filter: blur(12px);
-box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(253, 224, 137, 0.05);
+backdrop-filter: blur(10px);
+box-shadow: 0 15px 35px rgba(0,0,0,0.5);
 transform-style: preserve-3d;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: space-between;
-min-height: 380px;
 }
 
-/* EFFET HOLOGRAPHIQUE DE BRILLANCE TAPE-À-L'ŒIL */
 .vignette-card::before {
 content: '';
 position: absolute;
-inset: -100%;
-background: linear-gradient(115deg, transparent 20%, rgba(255, 255, 255, 0.4) 45%, rgba(243, 198, 73, 0.6) 50%, rgba(255, 255, 255, 0.4) 55%, transparent 80%);
-transform: rotate(25deg) translateY(-100%);
-transition: transform 0.8s ease;
+inset: 0;
+border-radius: 20px;
+padding: 2px;
+background: linear-gradient(135deg, transparent, rgba(243, 198, 73, 0.5), transparent);
+-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+-webkit-mask-composite: xor;
+mask-composite: exclude;
 pointer-events: none;
-z-index: 5;
-}
-
-.vignette-card:hover::before {
-transform: rotate(25deg) translateY(100%);
 }
 
 .vignette-card:hover {
-transform: translateY(-15px) rotateX(10deg) rotateY(-8deg) scale(1.04);
-box-shadow: 0 30px 60px rgba(243, 198, 73, 0.4), 0 0 20px rgba(243, 198, 73, 0.6);
-border-color: #fff;
-}
-
-/* PETITE CROIX DE FERMETURE EN HAUT À DROITE */
-.vignette-close-btn {
-position: absolute;
-top: 10px;
-right: 12px;
-width: 28px;
-height: 28px;
-background: rgba(0, 0, 0, 0.6);
-border: 1px solid var(--gold-primary);
-color: var(--gold-primary);
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 0.9rem;
-cursor: pointer;
-z-index: 10;
-transition: all 0.2s ease;
-}
-
-.vignette-close-btn:hover {
-background: var(--gold-primary);
-color: #000;
-transform: scale(1.15);
+transform: translateY(-12px) rotateX(8deg) rotateY(-5deg) scale(1.03);
+box-shadow: 0 20px 40px rgba(243, 198, 73, 0.3);
+border-color: var(--gold-primary);
 }
 
 .vignette-card.unlocked-anim {
@@ -947,27 +910,24 @@ animation: unlockPulse 1.2s cubic-bezier(0.25, 1, 0.5, 1);
 
 @keyframes unlockPulse {
 0% { transform: scale(1); box-shadow: 0 0 0 rgba(243, 198, 73, 0); }
-50% { transform: scale(1.18) rotate(4deg); box-shadow: 0 0 70px var(--gold-primary); border-color: #fff; }
+50% { transform: scale(1.15) rotate(3deg); box-shadow: 0 0 60px var(--gold-primary); border-color: #fff; }
 100% { transform: scale(1); box-shadow: 0 0 30px rgba(243, 198, 73, 0.4); }
 }
 
-/* DESIGN BOSS NATHAN CARER GOLD LÉGENDAIRE */
 .vignette-card.gold-boss {
-border: 3px solid var(--gold-primary);
-background: radial-gradient(circle at top, rgba(243, 198, 73, 0.4) 0%, rgba(15, 12, 5, 0.98) 85%);
-box-shadow: 0 0 50px rgba(243, 198, 73, 0.5), inset 0 0 30px rgba(243, 198, 73, 0.3);
+border: 2px solid var(--gold-primary);
+background: radial-gradient(circle at top, rgba(243, 198, 73, 0.3) 0%, rgba(18, 18, 24, 0.95) 80%);
+box-shadow: 0 0 40px rgba(243, 198, 73, 0.4);
 }
 
 .vignette-card.gold-boss:hover {
-box-shadow: 0 0 80px rgba(243, 198, 73, 0.9), inset 0 0 40px rgba(255, 255, 255, 0.5);
+box-shadow: 0 0 70px rgba(243, 198, 73, 0.8);
 }
 
-/* CADRE DE VIGNETTE VERROUILLÉE / BIENTÔT DISPONIBLE */
 .vignette-card.locked {
-opacity: 0.6;
-filter: grayscale(0.85);
-border-color: rgba(255,255,255,0.1);
-background: linear-gradient(160deg, rgba(20, 20, 25, 0.8) 0%, rgba(8, 8, 12, 0.9) 100%);
+opacity: 0.55;
+filter: grayscale(0.9);
+border-color: rgba(255,255,255,0.05);
 }
 
 .vignette-card.locked::after {
@@ -976,88 +936,73 @@ font-family: 'Font Awesome 6 Free';
 font-weight: 900;
 position: absolute;
 top: 15px;
-left: 15px;
+right: 15px;
 color: var(--gold-primary);
-font-size: 1.2rem;
+font-size: 1.3rem;
 text-shadow: 0 0 10px rgba(0,0,0,0.8);
 }
 
-.vignette-rarity-tag {
-font-size: 0.65rem;
-font-weight: 900;
-letter-spacing: 2px;
-text-transform: uppercase;
-background: var(--gold-gradient);
-color: #000;
-padding: 4px 10px;
-border-radius: 10px;
-margin-bottom: 10px;
-box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-}
-
 .vignette-img {
-width: 110px;
-height: 110px;
+width: 100px;
+height: 100px;
 border-radius: 50%;
-margin: 10px auto;
+margin: 0 auto 18px auto;
 display: flex;
 align-items: center;
 justify-content: center;
-font-size: 3rem;
-background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(0,0,0,0.8) 100%);
+font-size: 2.8rem;
+background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.5) 100%);
 border: 3px solid var(--gold-primary);
 color: var(--gold-primary);
-box-shadow: 0 0 25px rgba(243, 198, 73, 0.4);
+box-shadow: 0 0 20px rgba(243, 198, 73, 0.3);
 transition: all 0.4s ease;
-position: relative;
 }
 
 .vignette-card:hover .vignette-img {
 transform: scale(1.1) rotate(10deg);
-box-shadow: 0 0 35px var(--gold-primary);
+box-shadow: 0 0 30px var(--gold-primary);
 color: #fff;
 background: var(--gold-gradient);
 }
 
 .vignette-title {
 font-family: 'Cinzel', serif;
-font-size: 1.2rem;
-font-weight: 900;
+font-size: 1.25rem;
+font-weight: 800;
 color: #fff;
-margin-bottom: 4px;
+margin-bottom: 6px;
 letter-spacing: 1px;
 }
 
 .vignette-role {
-font-size: 0.8rem;
+font-size: 0.85rem;
 color: var(--gold-primary);
 text-transform: uppercase;
-font-weight: 800;
+font-weight: 700;
 letter-spacing: 1.5px;
 margin-bottom: 12px;
 }
 
 .vignette-req {
-font-size: 0.78rem;
-font-weight: 800;
+font-size: 0.8rem;
+font-weight: 700;
 color: var(--text-muted);
-background: rgba(0, 0, 0, 0.7);
-padding: 8px 16px;
+background: rgba(0, 0, 0, 0.6);
+padding: 6px 14px;
 border-radius: 20px;
 display: inline-block;
-border: 1px solid rgba(255,255,255,0.1);
+border: 1px solid rgba(255,255,255,0.08);
 transition: all 0.3s ease;
-width: 100%;
 }
 
-/* OVERLAY LÉGENDAIRE DÉBLOCAGE BOSS FINAL RETOURNEMENT SITE */
+/* OVERLAY LÉGENDAIRE DÉBLOCAGE BOSS FINAL */
 #boss-unlocked-overlay {
 position: fixed;
 top: 0;
 left: 0;
 width: 100vw;
 height: 100vh;
-background: radial-gradient(circle, rgba(243, 198, 73, 0.35) 0%, rgba(0, 0, 0, 0.98) 85%);
+background: radial-gradient(circle, rgba(243, 198, 73, 0.3) 0%, rgba(0, 0, 0, 0.98) 80%);
 z-index: 9999999;
 display: none;
 flex-direction: column;
@@ -1079,7 +1024,7 @@ border: 4px solid var(--gold-primary);
 border-radius: 30px;
 padding: 40px;
 box-shadow: 0 0 100px var(--gold-primary), inset 0 0 50px var(--gold-primary);
-max-width: 520px;
+max-width: 500px;
 width: 90%;
 position: relative;
 transform: rotate(-2deg);
@@ -1089,20 +1034,6 @@ animation: floatBoss 3s ease-in-out infinite alternate;
 @keyframes floatBoss {
 0% { transform: translateY(0) rotate(-2deg); }
 100% { transform: translateY(-15px) rotate(2deg); }
-}
-
-.boss-timer-badge {
-font-family: 'Cinzel', serif;
-font-size: 1.8rem;
-color: var(--gold-primary);
-font-weight: 900;
-margin: 15px 0;
-text-shadow: 0 0 15px var(--gold-primary);
-background: rgba(243, 198, 73, 0.1);
-padding: 10px 20px;
-border-radius: 15px;
-border: 1px solid var(--gold-primary);
-display: inline-block;
 }
 
 .auth-box {
@@ -1189,21 +1120,11 @@ width: 100%;
 <div class="boss-card-popup">
 <i class="fa-solid fa-crown" style="font-size: 5rem; color: var(--gold-primary); filter: drop-shadow(0 0 30px var(--gold-primary)); margin-bottom: 15px;"></i>
 <h1 style="font-family: 'Cinzel', serif; color: #fff; font-size: 2.2rem; text-shadow: 0 0 20px var(--gold-primary);">NATHAN CARER</h1>
-<p style="color: var(--gold-primary); font-weight: 800; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 10px;">LE BOSS ULTIME A ÉTÉ DÉBLOQUÉ !</p>
-<p style="color: #ddd; font-size: 0.95rem; line-height: 1.6;">
-Attention ! La puissance de la carte à retourner tout le site !
+<p style="color: var(--gold-primary); font-weight: 800; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 15px;">LE BOSS ULTIME A ÉTÉ DÉBLOQUÉ !</p>
+<p style="color: #ddd; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+Vous avez débloqué le créateur de NathanCinema. Le site s'est métamorphosé sous la puissance de cette carte légendaire !
 </p>
-
-<!-- CHRONO D'UNE MINUTE -->
-<div class="boss-timer-badge">
-<i class="fa-solid fa-hourglass-half fa-spin"></i> <span id="boss-timer-count">60</span>s
-</div>
-
-<p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px;">
-Le monde se remettra à l'endroit une fois le temps écoulé...
-</p>
-
-<button class="btn-action btn-gold-team" onclick="closeBossOverlay()" style="font-size: 1.1rem; padding: 15px 30px;">ACCISTER AU CHAOS</button>
+<button class="btn-action btn-gold-team" onclick="closeBossOverlay()" style="font-size: 1.1rem; padding: 15px 30px;">PRENDRE LE CONTRÔLE</button>
 </div>
 </div>
 
@@ -1372,14 +1293,14 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong> ai
 </div>
 </section>
 
-<!-- ONGLET 4: L'ÉQUIPE (DESIGN SPECTACULAIRE & CARTES POKÉMON COLLECTOR) -->
+<!-- ONGLET 4: L'ÉQUIPE (DESIGN SPECTACULAIRE & CARTES COLLECTOR ANIMÉES) -->
 <section id="equipe" class="tab-content">
 <div class="team-hero-banner">
 <h2 style="font-family: 'Cinzel', serif; font-size: 2.2rem; color: #fff; text-shadow: 0 0 15px var(--gold-primary);">
-<i class="fa-solid fa-crown" style="color: var(--gold-primary);"></i> LE HALL DES LÉGENDES DE L'ÉQUIPE
+<i class="fa-solid fa-crown" style="color: var(--gold-primary);"></i> LE HALL DES LÉGENDES
 </h2>
 <p style="color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 10px auto 0 auto;">
-Débloquez les cartes collector officielles style jeu de cartes en validant votre présence quotidiennement.
+Débloquez les cartes officielles de l'équipe technique en validant votre présence quotidiennement.
 </p>
 </div>
 
@@ -1444,49 +1365,41 @@ Débloquez les cartes collector officielles style jeu de cartes en validant votr
 <p id="validate-status-txt" style="font-size: 0.8rem; color: var(--gold-primary); margin-top: 8px; font-weight: 600;"></p>
 </div>
 
-<!-- GALERIE DES CARTES VIGNETTES COLLECTOR (STYLE POKÉMON) -->
+<!-- GALERIE DES CARTES VIGNETTES COLLECTOR -->
 <h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 10px;"><i class="fa-solid fa-gem"></i> Vignettes Collector de l'Équipe</h3>
 
 <div class="vignettes-grid">
 
 <!-- VIGNETTE BOSS FINAL - NATHAN CARER -->
-<div class="vignette-card gold-boss locked" id="vignette-boss" onclick="openVignetteDetails(event, 'Nathan CARER', 'Boss Final & Fondateur', '1 Validation', 'fa-crown', 'Créateur ultime de la plateforme NathanCinema, réalisateur et visionnaire du projet.')">
-<div class="vignette-close-btn" onclick="hideVignetteCard(event, 'vignette-boss')"><i class="fa-solid fa-xmark"></i></div>
-<div class="vignette-rarity-tag"><i class="fa-solid fa-star"></i> LÉGENDAIRE SECRET</div>
+<div class="vignette-card gold-boss locked" id="vignette-boss" onclick="openVignetteDetails('Nathan CARER', 'Fondateur & Boss Final', '1 Validation', 'fa-crown', 'Créateur ultime de la plateforme NathanCinema, réalisateur et visionnaire du projet.')">
 <div class="vignette-img"><i class="fa-solid fa-crown"></i></div>
 <div class="vignette-title">Nathan CARER</div>
 <div class="vignette-role">Boss Final / Fondateur</div>
 <div class="vignette-req" id="req-boss"><i class="fa-solid fa-lock"></i> Requis : 1 Validation</div>
 </div>
 
-<!-- VIGNETTE 2 - BIENTÔT DISPONIBLE -->
-<div class="vignette-card locked" id="vignette-v2" onclick="openVignetteDetails(event, 'Vignette bientôt disponible', 'Membre indisponible', '3 Validations', 'fa-user-secret', 'Membre de l équipe en cours de recrutement. Revenez bientôt !')">
-<div class="vignette-close-btn" onclick="hideVignetteCard(event, 'vignette-v2')"><i class="fa-solid fa-xmark"></i></div>
-<div class="vignette-rarity-tag"><i class="fa-solid fa-shield"></i> RARE</div>
-<div class="vignette-img"><i class="fa-solid fa-user-secret"></i></div>
-<div class="vignette-title">Bientôt disponible</div>
-<div class="vignette-role">Vignette verrouillée</div>
-<div class="vignette-req" id="req-v2"><i class="fa-solid fa-lock"></i> Requis : 3 Validations</div>
+<!-- VIGNETTE 2 - CO-RÉALISATRICE LOUISE LE PANSE -->
+<div class="vignette-card locked" id="vignette-v2" onclick="triggerLouiseCardEffect('Louise Le Panse', 'Co-Réalisatrice', '1 Validation', 'fa-video', 'Gestion des plannings de tournage et direction d artist.')">
+<div class="vignette-img"><i class="fa-solid fa-video"></i></div>
+<div class="vignette-title" id="v2-title-text">Louise Le Panse</div>
+<div class="vignette-role" id="v2-role-text">Co-Réalisatrice</div>
+<div class="vignette-req" id="req-v2"><i class="fa-solid fa-lock"></i> Requis : 1 Validation</div>
 </div>
 
-<!-- VIGNETTE 3 - BIENTÔT DISPONIBLE -->
-<div class="vignette-card locked" id="vignette-v3" onclick="openVignetteDetails(event, 'Vignette bientôt disponible', 'Membre indisponible', '5 Validations', 'fa-user-secret', 'Membre de l équipe en cours de recrutement. Revenez bientôt !')">
-<div class="vignette-close-btn" onclick="hideVignetteCard(event, 'vignette-v3')"><i class="fa-solid fa-xmark"></i></div>
-<div class="vignette-rarity-tag"><i class="fa-solid fa-shield"></i> ULTRA RARE</div>
-<div class="vignette-img"><i class="fa-solid fa-user-secret"></i></div>
-<div class="vignette-title">Bientôt disponible</div>
-<div class="vignette-role">Vignette verrouillée</div>
-<div class="vignette-req" id="req-v3"><i class="fa-solid fa-lock"></i> Requis : 5 Validations</div>
+<!-- VIGNETTE 3 - DESSINATRICE ENORA MARTEL -->
+<div class="vignette-card locked" id="vignette-v3" onclick="triggerEnoraCardEffect('Enora Martel', 'Dessinatrice', '1 Validation', 'fa-palette', 'Création des storyboards et univers visuel.')">
+<div class="vignette-img"><i class="fa-solid fa-palette"></i></div>
+<div class="vignette-title">Enora Martel</div>
+<div class="vignette-role">Dessinatrice</div>
+<div class="vignette-req" id="req-v3"><i class="fa-solid fa-lock"></i> Requis : 1 Validation</div>
 </div>
 
-<!-- VIGNETTE 4 - BIENTÔT DISPONIBLE -->
-<div class="vignette-card locked" id="vignette-v4" onclick="openVignetteDetails(event, 'Vignette bientôt disponible', 'Membre indisponible', '10 Validations', 'fa-user-secret', 'Membre de l équipe en cours de recrutement. Revenez bientôt !')">
-<div class="vignette-close-btn" onclick="hideVignetteCard(event, 'vignette-v4')"><i class="fa-solid fa-xmark"></i></div>
-<div class="vignette-rarity-tag"><i class="fa-solid fa-gem"></i> HYPER RARE</div>
-<div class="vignette-img"><i class="fa-solid fa-user-secret"></i></div>
-<div class="vignette-title">Bientôt disponible</div>
-<div class="vignette-role">Vignette verrouillée</div>
-<div class="vignette-req" id="req-v4"><i class="fa-solid fa-lock"></i> Requis : 10 Validations</div>
+<!-- VIGNETTE 4 - INGENIEUR SON -->
+<div class="vignette-card locked" id="vignette-v4" onclick="openVignetteDetails('Membre Équipe', 'Ingénieur du Son', '1 Validation', 'fa-microphone-lines', 'Expert du mixage, de la prise de son directe et du design sonore.')">
+<div class="vignette-img"><i class="fa-solid fa-microphone-lines"></i></div>
+<div class="vignette-title">Vignette Mystère</div>
+<div class="vignette-role">Ingénieur du Son</div>
+<div class="vignette-req" id="req-v4"><i class="fa-solid fa-lock"></i> Requis : 1 Validation</div>
 </div>
 
 </div>
@@ -1569,7 +1482,7 @@ Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez t
 <h2 style="font-family: 'Cinzel', serif; color: var(--gold-primary); font-size: 1.8rem;" id="v-modal-title"></h2>
 <p style="color: var(--gold-primary); font-weight: 700; text-transform: uppercase; margin-bottom: 15px;" id="v-modal-role"></p>
 <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;" id="v-modal-desc"></p>
-<button class="btn-action" onclick="closeVignetteModal()">Fermer la vignette</button>
+<button class="btn-action" onclick="closeVignetteModal()">Super !</button>
 </div>
 </div>
 
@@ -1583,7 +1496,6 @@ Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez t
 <script>
 let currentProjectName = "";
 const TARGET_EMAIL = "nathan.carer.pro@gmail.com";
-let bossTimerInterval = null;
 
 // GESTION DU MODE DE LECTURE
 function toggleViewMenu() {
@@ -1632,6 +1544,81 @@ filter.connect(gain);
 gain.connect(audioCtx.destination);
 
 noise.start();
+} catch(e) {}
+}
+
+// EFFETS SONORES : EXPLOSION & RAYONNEMENT (LOUISE)
+function playExplosionAndResonanceSound() {
+try {
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const now = audioCtx.currentTime;
+
+// 1. Bruit d'explosion
+const bufferSize = audioCtx.sampleRate * 0.4;
+const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+const data = buffer.getChannelData(0);
+for (let i = 0; i < bufferSize; i++) {
+data[i] = Math.random() * 2 - 1;
+}
+const noise = audioCtx.createBufferSource();
+noise.buffer = buffer;
+
+const noiseFilter = audioCtx.createBiquadFilter();
+noiseFilter.type = 'lowpass';
+noiseFilter.frequency.setValueAtTime(800, now);
+noiseFilter.frequency.exponentialRampToValueAtTime(30, now + 0.4);
+
+const noiseGain = audioCtx.createGain();
+noiseGain.gain.setValueAtTime(1, now);
+noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+noise.connect(noiseFilter);
+noiseFilter.connect(noiseGain);
+noiseGain.connect(audioCtx.destination);
+noise.start(now);
+
+// 2. Bruit de rayonnement synthétique féérique (chime/reconstruction)
+setTimeout(() => {
+const freqs = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98, 2093.00];
+freqs.forEach((f, idx) => {
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+osc.type = 'sine';
+osc.frequency.setValueAtTime(f, audioCtx.currentTime + (idx * 0.08));
+
+gain.gain.setValueAtTime(0, audioCtx.currentTime + (idx * 0.08));
+gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + (idx * 0.08) + 0.05);
+gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (idx * 0.08) + 0.8);
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+osc.start(audioCtx.currentTime + (idx * 0.08));
+osc.stop(audioCtx.currentTime + (idx * 0.08) + 0.8);
+});
+}, 400);
+} catch(e) {}
+}
+
+// EFFET SONORE : PAILLETTES (ENORA)
+function playSparkleGlitterSound() {
+try {
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const now = audioCtx.currentTime;
+for (let i = 0; i < 15; i++) {
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+osc.type = 'sine';
+const randomFreq = 1200 + Math.random() * 2000;
+osc.frequency.setValueAtTime(randomFreq, now + (i * 0.05));
+
+gain.gain.setValueAtTime(0.15, now + (i * 0.05));
+gain.gain.exponentialRampToValueAtTime(0.001, now + (i * 0.05) + 0.2);
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+osc.start(now + (i * 0.05));
+osc.stop(now + (i * 0.05) + 0.2);
+}
 } catch(e) {}
 }
 
@@ -2053,20 +2040,6 @@ setTimeout(() => particle.remove(), 800);
 }
 }
 
-// ANIMATION D'OR DE PARTOUT (PLUIE DORÉE)
-function triggerGoldRain() {
-for (let i = 0; i < 80; i++) {
-setTimeout(() => {
-const p = document.createElement('div');
-p.className = 'gold-rain-particle';
-p.style.left = (Math.random() * 100) + 'vw';
-p.style.animationDuration = (1.5 + Math.random() * 2) + 's';
-document.body.appendChild(p);
-setTimeout(() => p.remove(), 3500);
-}, i * 30);
-}
-}
-
 /* --- LOGIQUE COMPTE, VALIDATION & VIGNETTES COLLECTOR --- */
 
 let currentUser = null;
@@ -2190,8 +2163,8 @@ localStorage.setItem('nc_users', JSON.stringify(users));
 
 checkUserState();
 
-// VÉRIFICATION DÉBLOCAGE BOSS FINAL (NATHAN CARER)
-if (currentUser.validations === 1) {
+// VÉRIFICATION DÉBLOCAGE BOSS FINAL
+if (currentUser.validations >= 1) {
 triggerBossExplosionSequence();
 } else {
 triggerStandardCardUnlockAnimation();
@@ -2203,64 +2176,42 @@ function triggerBossExplosionSequence() {
 // 1. Son Boss nucléaire
 playBossNuclearSound();
 
-// 2. Tremblement apocalyptique
+// 2. Tremblement de terre apocalyptique sur tout le site
 document.body.classList.add('boss-shake-active');
 
-// 3. Feux d'artifice géants et PLUIE D'OR
+// 3. Feux d'artifice géants
 triggerFireworks();
-triggerGoldRain();
 setTimeout(triggerFireworks, 400);
-setTimeout(triggerGoldRain, 600);
+setTimeout(triggerFireworks, 800);
 
-// 4. LE SITE SE RETOURNE COMPLÈTEMENT (180 deg) !
-setTimeout(() => {
-document.body.classList.add('site-flipped');
-}, 500);
+// 4. Explosion physique de TOUS les boutons du site
+const buttons = document.querySelectorAll('button, .btn-action');
+buttons.forEach(btn => {
+const randomX = (Math.random() - 0.5) * 800;
+const randomY = (Math.random() - 0.5) * 800;
+const randomRot = (Math.random() - 0.5) * 720;
+btn.style.setProperty('--exp-x', `${randomX}px`);
+btn.style.setProperty('--exp-y', `${randomY}px`);
+btn.style.setProperty('--exp-r', `${randomRot}deg`);
+btn.classList.add('btn-exploded');
+});
 
-// 5. Affichage de l'overlay de célébration Légendaire
+// 5. Affichage de l'overlay de célébration Légendaire après l'explosion
 setTimeout(() => {
 document.body.classList.remove('boss-shake-active');
 document.getElementById('boss-unlocked-overlay').style.display = 'flex';
-startBossTimer(60);
 }, 1800);
-}
-
-// CHRONOMÈTRE DE 1 MINUTE AVANT RETOUR À LA NORMALE DU SITE
-function startBossTimer(seconds) {
-let timeLeft = seconds;
-const timerDisplay = document.getElementById('boss-timer-count');
-if(bossTimerInterval) clearInterval(bossTimerInterval);
-
-bossTimerInterval = setInterval(() => {
-timeLeft--;
-if(timerDisplay) timerDisplay.innerText = timeLeft;
-
-if(timeLeft <= 0) {
-clearInterval(bossTimerInterval);
-restoreSiteNormalState();
-}
-}, 1000);
-}
-
-function restoreSiteNormalState() {
-document.body.classList.remove('site-flipped');
-document.getElementById('boss-unlocked-overlay').style.display = 'none';
 }
 
 function closeBossOverlay() {
 document.getElementById('boss-unlocked-overlay').style.display = 'none';
-}
-
-// FERMETURE D'UNE VIGNETTE DÉBLOQUÉE / MASQUER LA CARTE
-function hideVignetteCard(event, cardId) {
-event.stopPropagation();
-const card = document.getElementById(cardId);
-card.style.transition = "all 0.5s ease";
-card.style.transform = "scale(0) rotate(-20deg)";
-card.style.opacity = "0";
-setTimeout(() => {
-card.style.display = "none";
-}, 500);
+// Reconstituer tous les boutons du site
+const buttons = document.querySelectorAll('.btn-exploded');
+buttons.forEach(btn => {
+btn.classList.remove('btn-exploded');
+btn.style.transform = 'none';
+btn.style.opacity = '1';
+});
 }
 
 // ANIMATION DE DÉBLOCAGE STANDARD POUR AUTRES CARTES
@@ -2273,14 +2224,11 @@ alert("Présence validée pour aujourd'hui ! +1 Validation.");
 function updateVignettesDisplay() {
 const val = currentUser ? (currentUser.validations || 0) : 0;
 
-// Vignette Boss (Nathan CARER) - 1 Val
+// Requis réglé à 1 pour toutes les cartes pour les tests
 toggleVignetteStatus('vignette-boss', 'req-boss', val >= 1, 1);
-// Vignette 2 - 3 Val
-toggleVignetteStatus('vignette-v2', 'req-v2', val >= 3, 3);
-// Vignette 3 - 5 Val
-toggleVignetteStatus('vignette-v3', 'req-v3', val >= 5, 5);
-// Vignette 4 - 10 Val
-toggleVignetteStatus('vignette-v4', 'req-v4', val >= 10, 10);
+toggleVignetteStatus('vignette-v2', 'req-v2', val >= 1, 1);
+toggleVignetteStatus('vignette-v3', 'req-v3', val >= 1, 1);
+toggleVignetteStatus('vignette-v4', 'req-v4', val >= 1, 1);
 }
 
 function toggleVignetteStatus(cardId, reqId, isUnlocked, reqCount) {
@@ -2292,22 +2240,78 @@ card.classList.add('unlocked-anim');
 setTimeout(() => card.classList.remove('unlocked-anim'), 1200);
 }
 card.classList.remove('locked');
-req.innerHTML = `<i class="fa-solid fa-lock-open"></i> Débloqué !`;
+req.innerHTML = '<i class="fa-solid fa-lock-open"></i> Débloqué !';
 req.style.background = 'rgba(243, 198, 73, 0.25)';
 req.style.color = 'var(--gold-primary)';
 req.style.borderColor = 'var(--gold-primary)';
 } else {
 card.classList.add('locked');
 req.innerHTML = `<i class="fa-solid fa-lock"></i> Requis : ${reqCount} Validation${reqCount > 1 ? 's' : ''}`;
-req.style.background = 'rgba(0, 0, 0, 0.7)';
+req.style.background = 'rgba(0, 0, 0, 0.6)';
 req.style.color = 'var(--text-muted)';
 req.style.borderColor = 'rgba(255,255,255,0.08)';
 }
 }
 
-function openVignetteDetails(event, title, role, reqTxt, iconClass, desc) {
-const card = event.currentTarget;
+// DÉCLENCHEMENT D'ANIMATION ET D'EFFET DES CARTES LOUISE & ENORA
+function triggerLouiseCardEffect(title, role, reqTxt, iconClass, desc) {
+const card = document.getElementById('vignette-v2');
 if(card.classList.contains('locked')) {
+alert("Cette vignette collector est verrouillée ! Vous devez accumuler " + reqTxt + " pour pouvoir la consulter.");
+return;
+}
+
+playExplosionAndResonanceSound();
+card.classList.add('louise-anim-active');
+
+setTimeout(() => {
+document.getElementById('v2-role-text').innerText = "Future actrice ⭐️";
+}, 600);
+
+setTimeout(() => {
+openVignetteDetails(title, "Future actrice ⭐️", reqTxt, iconClass, desc);
+card.classList.remove('louise-anim-active');
+}, 1500);
+}
+
+function triggerEnoraCardEffect(title, role, reqTxt, iconClass, desc) {
+const card = document.getElementById('vignette-v3');
+if(card.classList.contains('locked')) {
+alert("Cette vignette collector est verrouillée ! Vous devez accumuler " + reqTxt + " pour pouvoir la consulter.");
+return;
+}
+
+playSparkleGlitterSound();
+card.classList.add('enora-anim-active');
+
+// Génération visuelle des paillettes féériques
+for (let i = 0; i < 40; i++) {
+const sparkle = document.createElement('div');
+sparkle.className = 'sparkle';
+const rect = card.getBoundingClientRect();
+sparkle.style.left = (rect.left + rect.width / 2) + 'px';
+sparkle.style.top = (rect.top + rect.height / 2) + 'px';
+sparkle.style.background = '#ff00ea';
+sparkle.style.boxShadow = '0 0 12px #ff00ea';
+
+const angle = Math.random() * Math.PI * 2;
+const dist = 60 + Math.random() * 120;
+sparkle.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+sparkle.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+
+document.body.appendChild(sparkle);
+setTimeout(() => sparkle.remove(), 800);
+}
+
+setTimeout(() => {
+openVignetteDetails(title, role, reqTxt, iconClass, desc);
+card.classList.remove('enora-anim-active');
+}, 1200);
+}
+
+function openVignetteDetails(title, role, reqTxt, iconClass, desc) {
+const card = event ? event.currentTarget : null;
+if(card && card.classList.contains('locked')) {
 alert("Cette vignette collector est verrouillée ! Vous devez accumuler " + reqTxt + " pour pouvoir la consulter.");
 return;
 }
