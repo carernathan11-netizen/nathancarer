@@ -382,6 +382,7 @@ border-radius: 30px;
 border: 1px solid var(--glass-border);
 flex-wrap: wrap;
 justify-content: center;
+align-items: center;
 }
 
 .nav-btn {
@@ -400,6 +401,31 @@ transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 color: #fff;
 background: rgba(243, 198, 73, 0.18);
 box-shadow: 0 0 20px rgba(243, 198, 73, 0.25);
+}
+
+/* BOUTON OR MASSIF ÉQUIPE */
+.btn-gold-team {
+background: var(--gold-gradient) !important;
+color: #000 !important;
+font-weight: 800 !important;
+font-family: 'Cinzel', serif !important;
+padding: 10px 22px !important;
+border-radius: 20px !important;
+border: 1px solid #ffffff !important;
+box-shadow: 0 0 20px rgba(243, 198, 73, 0.6) !important;
+text-transform: uppercase;
+letter-spacing: 1px;
+animation: pulseGold 2s infinite alternate;
+}
+
+.btn-gold-team:hover {
+transform: scale(1.05);
+box-shadow: 0 0 35px rgba(243, 198, 73, 0.9) !important;
+}
+
+@keyframes pulseGold {
+0% { box-shadow: 0 0 15px rgba(243, 198, 73, 0.5); }
+100% { box-shadow: 0 0 30px rgba(243, 198, 73, 0.9); }
 }
 
 /* --- BANDE DÉFILANTE CINÉMA --- */
@@ -754,6 +780,124 @@ transition: color 0.3s ease;
 color: var(--gold-primary);
 }
 
+/* --- VIGNETTES & ESPACE L'ÉQUIPE --- */
+.vignettes-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 20px;
+margin-top: 25px;
+}
+
+.vignette-card {
+background: rgba(255, 255, 255, 0.03);
+border: 2px solid var(--glass-border);
+border-radius: 16px;
+padding: 20px;
+text-align: center;
+position: relative;
+transition: all 0.3s ease;
+cursor: pointer;
+overflow: hidden;
+}
+
+.vignette-card.gold-boss {
+border: 2px solid var(--gold-primary);
+background: radial-gradient(circle, rgba(243, 198, 73, 0.15) 0%, rgba(18, 18, 24, 0.9) 100%);
+box-shadow: 0 0 25px rgba(243, 198, 73, 0.3);
+}
+
+.vignette-card.locked {
+opacity: 0.6;
+filter: grayscale(0.8);
+}
+
+.vignette-card.locked::after {
+content: '\f023';
+font-family: 'Font Awesome 6 Free';
+font-weight: 900;
+position: absolute;
+top: 15px;
+right: 15px;
+color: var(--gold-primary);
+font-size: 1.2rem;
+}
+
+.vignette-img {
+width: 90px;
+height: 90px;
+border-radius: 50%;
+margin: 0 auto 15px auto;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 2.5rem;
+background: rgba(255, 255, 255, 0.05);
+border: 2px solid var(--gold-primary);
+color: var(--gold-primary);
+}
+
+.vignette-title {
+font-family: 'Cinzel', serif;
+font-size: 1.1rem;
+color: #fff;
+margin-bottom: 5px;
+}
+
+.vignette-role {
+font-size: 0.8rem;
+color: var(--gold-primary);
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-bottom: 10px;
+}
+
+.vignette-req {
+font-size: 0.75rem;
+color: var(--text-muted);
+background: rgba(0, 0, 0, 0.4);
+padding: 4px 10px;
+border-radius: 10px;
+display: inline-block;
+}
+
+.auth-box {
+background: rgba(0, 0, 0, 0.4);
+border: 1px solid var(--border-gold);
+border-radius: 16px;
+padding: 20px;
+margin-bottom: 25px;
+}
+
+.auth-tabs {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+border-bottom: 1px solid var(--glass-border);
+padding-bottom: 10px;
+}
+
+.auth-tab-btn {
+background: transparent;
+border: none;
+color: var(--text-muted);
+font-weight: 700;
+cursor: pointer;
+font-size: 0.9rem;
+}
+
+.auth-tab-btn.active {
+color: var(--gold-primary);
+}
+
+.validate-section {
+text-align: center;
+background: rgba(243, 198, 73, 0.05);
+border: 1px dashed var(--gold-primary);
+border-radius: 16px;
+padding: 20px;
+margin-bottom: 25px;
+}
+
 /* --- FOOTER --- */
 footer {
 margin-top: 80px;
@@ -825,6 +969,7 @@ width: 100%;
 <button class="nav-btn active" onclick="switchTab('annonces', this)">Annonces & Castings</button>
 <button class="nav-btn" onclick="switchTab('soumettre', this)">Proposer une annonce</button>
 <button class="nav-btn" onclick="switchTab('apropos', this)">À Propos</button>
+<button class="nav-btn btn-gold-team" onclick="switchTab('equipe', this)"><i class="fa-solid fa-crown"></i> L’équipe</button>
 </nav>
 
 <!-- BOUTON MODE DE LECTURE EN HAUT À DROITE -->
@@ -959,6 +1104,112 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong> ai
 </div>
 </section>
 
+<!-- ONGLET 4: L'ÉQUIPE (ESPACE MEMBRE & VIGNETTES COLLECTOR) -->
+<section id="equipe" class="tab-content">
+<h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> L'Équipe & Vignettes Collector</h2>
+
+<!-- ESPACE AUTHENTIFICATION -->
+<div class="auth-box" id="auth-box">
+<div class="auth-tabs">
+<button class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthForm('login')">Se Connecter</button>
+<button class="auth-tab-btn" id="tab-btn-register" onclick="switchAuthForm('register')">Créer un Compte</button>
+</div>
+
+<!-- FORMULAIRE CONNEXION -->
+<form id="form-login" onsubmit="handleLogin(event)">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+<div class="form-group" style="margin-bottom:10px;">
+<label>Email</label>
+<input type="email" id="login-email" placeholder="votre@email.com" required>
+</div>
+<div class="form-group" style="margin-bottom:10px;">
+<label>Mot de passe</label>
+<input type="password" id="login-pass" placeholder="••••••••" required>
+</div>
+</div>
+<button type="submit" class="btn-action" style="margin-top: 10px;"><i class="fa-solid fa-right-to-bracket"></i> Connexion</button>
+</form>
+
+<!-- FORMULAIRE INSCRIPTION -->
+<form id="form-register" onsubmit="handleRegister(event)" style="display: none;">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px;">
+<div class="form-group" style="margin-bottom:10px;">
+<label>Pseudo</label>
+<input type="text" id="reg-pseudo" placeholder="Votre Pseudo" required>
+</div>
+<div class="form-group" style="margin-bottom:10px;">
+<label>Email</label>
+<input type="email" id="reg-email" placeholder="votre@email.com" required>
+</div>
+<div class="form-group" style="margin-bottom:10px;">
+<label>Mot de passe</label>
+<input type="password" id="reg-pass" placeholder="••••••••" required>
+</div>
+</div>
+<button type="submit" class="btn-action" style="margin-top: 10px;"><i class="fa-solid fa-user-plus"></i> S'inscrire</button>
+</form>
+</div>
+
+<!-- PANNEAU UTILISATEUR CONNECTÉ -->
+<div class="auth-box" id="user-logged-box" style="display: none;">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+<div>
+<h4 style="color: var(--gold-primary); font-family: 'Cinzel', serif;" id="user-welcome">Bienvenue !</h4>
+<p style="font-size: 0.85rem; color: var(--text-muted);">Validations de présence accumulées : <strong id="user-valid-count" style="color:#fff;">0</strong></p>
+</div>
+<button class="btn-action btn-secondary" style="width: auto; padding: 6px 15px;" onclick="handleLogout()"><i class="fa-solid fa-power-off"></i> Déconnexion</button>
+</div>
+</div>
+
+<!-- SECTION VALIDATION QUOTIDIENNE -->
+<div class="validate-section">
+<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 8px;"><i class="fa-solid fa-calendar-check"></i> Validation Quotidienne</h3>
+<p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">Participez aux projets du site et validez votre présence chaque jour. Le compteur se renouvelle toutes les 24h (à minuit).</p>
+<button class="btn-action" id="btn-validate-presence" style="max-width: 250px; margin: 0 auto;" onclick="validatePresence()"><i class="fa-solid fa-check-double"></i> Je valide</button>
+<p id="validate-status-txt" style="font-size: 0.8rem; color: var(--gold-primary); margin-top: 8px; font-weight: 600;"></p>
+</div>
+
+<!-- GALERIE DES VIGNETTES COLLECTOR -->
+<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 10px;"><i class="fa-solid fa-gem"></i> Vignettes Collector de l'Équipe</h3>
+<p style="font-size: 0.85rem; color: var(--text-muted);">Débloquez les vignettes d'équipe en accumulant vos validations de présence !</p>
+
+<div class="vignettes-grid">
+
+<!-- VIGNETTE BOSS FINAL - NATHAN CARER -->
+<div class="vignette-card gold-boss locked" id="vignette-boss" onclick="openVignetteDetails('Nathan CARER', 'Fondateur & Boss Final', '1 Validation', 'fa-crown', 'Créateur ultime de la plateforme NathanCinema, réalisateur et visionnaire du projet.')">
+<div class="vignette-img"><i class="fa-solid fa-crown"></i></div>
+<div class="vignette-title">Nathan CARER</div>
+<div class="vignette-role">Boss Final / Fondateur</div>
+<div class="vignette-req" id="req-boss"><i class="fa-solid fa-lock"></i> Requis : 1 Validation</div>
+</div>
+
+<!-- VIGNETTE 2 - CO-RÉALISATEUR -->
+<div class="vignette-card locked" id="vignette-v2" onclick="openVignetteDetails('Membre Équipe', 'Co-Réalisateur / Assistant', '3 Validations', 'fa-video', 'Gestion des plannings de tournage et direction d artist.')">
+<div class="vignette-img"><i class="fa-solid fa-video"></i></div>
+<div class="vignette-title">Vignette Mystère</div>
+<div class="vignette-role">Co-Réalisateur</div>
+<div class="vignette-req" id="req-v2"><i class="fa-solid fa-lock"></i> Requis : 3 Validations</div>
+</div>
+
+<!-- VIGNETTE 3 - CHEF OPÉRATEUR -->
+<div class="vignette-card locked" id="vignette-v3" onclick="openVignetteDetails('Membre Équipe', 'Chef Opérateur Image', '5 Validations', 'fa-camera', 'Responsable du cadrage, de l éclairage et de l esthétique visuelle.')">
+<div class="vignette-img"><i class="fa-solid fa-camera"></i></div>
+<div class="vignette-title">Vignette Mystère</div>
+<div class="vignette-role">Chef Opérateur</div>
+<div class="vignette-req" id="req-v3"><i class="fa-solid fa-lock"></i> Requis : 5 Validations</div>
+</div>
+
+<!-- VIGNETTE 4 - INGENIEUR SON -->
+<div class="vignette-card locked" id="vignette-v4" onclick="openVignetteDetails('Membre Équipe', 'Ingénieur du Son', '10 Validations', 'fa-microphone-lines', 'Expert du mixage, de la prise de son directe et du design sonore.')">
+<div class="vignette-img"><i class="fa-solid fa-microphone-lines"></i></div>
+<div class="vignette-title">Vignette Mystère</div>
+<div class="vignette-role">Ingénieur du Son</div>
+<div class="vignette-req" id="req-v4"><i class="fa-solid fa-lock"></i> Requis : 10 Validations</div>
+</div>
+
+</div>
+</section>
+
 </div>
 
 <!-- MODALE CANDIDATURE -->
@@ -1025,6 +1276,18 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong> ai
 Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez toutes nos nouveautés, castings exclusifs et actualités directement !
 </p>
 <button class="btn-action" onclick="closeThanksModal()">EXCELLENT !</button>
+</div>
+</div>
+
+<!-- MODALE DÉTAIL VIGNETTE COLLECTOR -->
+<div id="vignette-modal" class="modal">
+<div class="modal-content" style="text-align: center; border: 2px solid var(--gold-primary);">
+<span class="close-modal" onclick="closeVignetteModal()">×</span>
+<div class="vignette-img" id="v-modal-img" style="width: 110px; height: 110px; font-size: 3.5rem; margin-top: 10px;"></div>
+<h2 style="font-family: 'Cinzel', serif; color: var(--gold-primary); font-size: 1.8rem;" id="v-modal-title"></h2>
+<p style="color: var(--gold-primary); font-weight: 700; text-transform: uppercase; margin-bottom: 15px;" id="v-modal-role"></p>
+<p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px;" id="v-modal-desc"></p>
+<button class="btn-action" onclick="closeVignetteModal()">Super !</button>
 </div>
 </div>
 
@@ -1285,6 +1548,7 @@ setTimeout(() => {
 document.getElementById('clap-overlay').classList.remove('active');
 }, 300);
 }, 300);
+checkUserState();
 });
 
 // Changement d'onglet
@@ -1478,6 +1742,178 @@ document.getElementById('newsletter-thanks-modal').classList.add('active');
 btn.disabled = false;
 document.getElementById('newsletter-nom').value = "";
 document.getElementById('newsletter-email').value = "";
+}
+
+/* --- LOGIQUE ESPACE COMPTE, VALIDATION & VIGNETTES COLLECTOR --- */
+
+let currentUser = null;
+
+function switchAuthForm(type) {
+if(type === 'login') {
+document.getElementById('form-login').style.display = 'block';
+document.getElementById('form-register').style.display = 'none';
+document.getElementById('tab-btn-login').classList.add('active');
+document.getElementById('tab-btn-register').classList.remove('active');
+} else {
+document.getElementById('form-login').style.display = 'none';
+document.getElementById('form-register').style.display = 'block';
+document.getElementById('tab-btn-login').classList.remove('active');
+document.getElementById('tab-btn-register').classList.add('active');
+}
+}
+
+function handleRegister(e) {
+e.preventDefault();
+const pseudo = document.getElementById('reg-pseudo').value;
+const email = document.getElementById('reg-email').value;
+const pass = document.getElementById('reg-pass').value;
+
+let users = JSON.parse(localStorage.getItem('nc_users') || '[]');
+if(users.find(u => u.email === email)) {
+alert("Un compte existe déjà avec cet e-mail.");
+return;
+}
+
+const newUser = { pseudo, email, pass, validations: 0, lastValidation: null };
+users.push(newUser);
+localStorage.setItem('nc_users', JSON.stringify(users));
+localStorage.setItem('nc_current_user', JSON.stringify(newUser));
+
+alert("Compte créé avec succès !");
+checkUserState();
+}
+
+function handleLogin(e) {
+e.preventDefault();
+const email = document.getElementById('login-email').value;
+const pass = document.getElementById('login-pass').value;
+
+let users = JSON.parse(localStorage.getItem('nc_users') || '[]');
+const user = users.find(u => u.email === email && u.pass === pass);
+
+if(!user) {
+alert("Identifiants incorrects.");
+return;
+}
+
+localStorage.setItem('nc_current_user', JSON.stringify(user));
+checkUserState();
+}
+
+function handleLogout() {
+localStorage.removeItem('nc_current_user');
+checkUserState();
+}
+
+function checkUserState() {
+const saved = localStorage.getItem('nc_current_user');
+if(saved) {
+currentUser = JSON.parse(saved);
+document.getElementById('auth-box').style.display = 'none';
+document.getElementById('user-logged-box').style.display = 'block';
+document.getElementById('user-welcome').innerText = "Bienvenue, " + currentUser.pseudo + " !";
+document.getElementById('user-valid-count').innerText = currentUser.validations || 0;
+checkValidationAvailability();
+updateVignettesDisplay();
+} else {
+currentUser = null;
+document.getElementById('auth-box').style.display = 'block';
+document.getElementById('user-logged-box').style.display = 'none';
+document.getElementById('user-valid-count').innerText = "0";
+updateVignettesDisplay();
+}
+}
+
+function checkValidationAvailability() {
+if(!currentUser) return;
+const btn = document.getElementById('btn-validate-presence');
+const txt = document.getElementById('validate-status-txt');
+const today = new Date().toDateString();
+
+if(currentUser.lastValidation === today) {
+btn.disabled = true;
+btn.style.opacity = '0.5';
+btn.style.cursor = 'not-allowed';
+txt.innerText = "Vous avez déjà validé votre présence aujourd'hui ! Revenez demain à minuit.";
+} else {
+btn.disabled = false;
+btn.style.opacity = '1';
+btn.style.cursor = 'pointer';
+txt.innerText = "Validation disponible aujourd'hui !";
+}
+}
+
+function validatePresence() {
+if(!currentUser) {
+alert("Veuillez vous connecter ou créer un compte pour valider votre présence !");
+return;
+}
+
+const today = new Date().toDateString();
+if(currentUser.lastValidation === today) return;
+
+currentUser.validations = (currentUser.validations || 0) + 1;
+currentUser.lastValidation = today;
+
+// Sauvegarde utilisateur
+localStorage.setItem('nc_current_user', JSON.stringify(currentUser));
+let users = JSON.parse(localStorage.getItem('nc_users') || '[]');
+const idx = users.findIndex(u => u.email === currentUser.email);
+if(idx !== -1) {
+users[idx] = currentUser;
+localStorage.setItem('nc_users', JSON.stringify(users));
+}
+
+playCelebrationMusic();
+alert("Présence validée pour aujourd'hui ! +1 Validation.");
+checkUserState();
+}
+
+function updateVignettesDisplay() {
+const val = currentUser ? (currentUser.validations || 0) : 0;
+
+// Vignette Boss (Nathan CARER) - 1 Val
+toggleVignetteStatus('vignette-boss', 'req-boss', val >= 1, 1);
+// Vignette 2 - 3 Val
+toggleVignetteStatus('vignette-v2', 'req-v2', val >= 3, 3);
+// Vignette 3 - 5 Val
+toggleVignetteStatus('vignette-v3', 'req-v3', val >= 5, 5);
+// Vignette 4 - 10 Val
+toggleVignetteStatus('vignette-v4', 'req-v4', val >= 10, 10);
+}
+
+function toggleVignetteStatus(cardId, reqId, isUnlocked, reqCount) {
+const card = document.getElementById(cardId);
+const req = document.getElementById(reqId);
+if(isUnlocked) {
+card.classList.remove('locked');
+req.innerHTML = `<i class="fa-solid fa-lock-open"></i> Débloqué !`;
+req.style.background = 'rgba(243, 198, 73, 0.2)';
+req.style.color = 'var(--gold-primary)';
+} else {
+card.classList.add('locked');
+req.innerHTML = `<i class="fa-solid fa-lock"></i> Requis : ${reqCount} Validation${reqCount > 1 ? 's' : ''}`;
+req.style.background = 'rgba(0, 0, 0, 0.4)';
+req.style.color = 'var(--text-muted)';
+}
+}
+
+function openVignetteDetails(title, role, reqTxt, iconClass, desc) {
+const card = event.currentTarget;
+if(card.classList.contains('locked')) {
+alert("Cette vignette collector est verrouillée ! Vous devez accumuler " + reqTxt + " pour pouvoir la consulter.");
+return;
+}
+
+document.getElementById('v-modal-img').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+document.getElementById('v-modal-title').innerText = title;
+document.getElementById('v-modal-role').innerText = role;
+document.getElementById('v-modal-desc').innerText = desc;
+document.getElementById('vignette-modal').classList.add('active');
+}
+
+function closeVignetteModal() {
+document.getElementById('vignette-modal').classList.remove('active');
 }
 </script>
 </body>
