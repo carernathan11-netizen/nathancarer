@@ -1,1283 +1,1442 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NathanCinema — Plateforme Projets & Castings</title>
-    <!-- Google Fonts & FontAwesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Cinzel:wght@600;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --bg-dark: #070709;
-            --bg-card: rgba(18, 18, 24, 0.65);
-            --gold-primary: #f3c649;
-            --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-            --gold-glow: 0 0 30px rgba(243, 198, 73, 0.4);
-            --text-main: #f0f0f5;
-            --text-muted: #a0a0b0;
-            --border-gold: rgba(243, 198, 73, 0.25);
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(circle at 15% 20%, rgba(243, 198, 73, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(191, 149, 63, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
-            overflow-x: hidden;
-            min-height: 100vh;
-            transition: width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
-        }
-
-        /* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
-        body.mode-pc {
-            width: 100% !important;
-            max-width: 100% !important;
-            margin: 0 auto !important;
-            border: none !important;
-            border-radius: 0 !important;
-        }
-
-        body.mode-tablette {
-            width: 100% !important;
-            max-width: 768px !important;
-            margin: 20px auto !important;
-            border: 2px solid var(--border-gold) !important;
-            border-radius: 20px !important;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
-        }
-
-        body.mode-telephone {
-            width: 100% !important;
-            max-width: 375px !important;
-            margin: 20px auto !important;
-            border: 2px solid var(--border-gold) !important;
-            border-radius: 30px !important;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
-        }
-
-        .view-mode-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .view-mode-btn {
-            background: rgba(243, 198, 73, 0.1);
-            border: 1px solid var(--gold-primary);
-            color: var(--gold-primary);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .view-mode-btn:hover {
-            background: var(--gold-gradient);
-            color: #000;
-        }
-
-        .view-mode-menu {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 110%;
-            background: rgba(18, 18, 24, 0.95);
-            border: 1px solid var(--border-gold);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            z-index: 1001;
-            min-width: 150px;
-        }
-
-        .view-mode-menu.show {
-            display: block;
-        }
-
-        .view-mode-option {
-            padding: 10px 15px;
-            color: var(--text-main);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        .view-mode-option:hover {
-            background: rgba(243, 198, 73, 0.2);
-            color: var(--gold-primary);
-        }
-
-        /* --- OVERLAY ANIMATION CLAP DE CINÉMA --- */
-        #clap-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.25s ease;
-        }
-
-        #clap-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .clapperboard {
-            width: 280px;
-            background: #141418;
-            border: 2px solid var(--gold-primary);
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 0 50px rgba(243, 198, 73, 0.5);
-            transform: scale(0.9);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        #clap-overlay.active .clapperboard {
-            transform: scale(1.1);
-        }
-
-        .clap-top {
-            height: 50px;
-            background: repeating-linear-gradient(-45deg, #000, #000 20px, var(--gold-primary) 20px, var(--gold-primary) 40px);
-            transform-origin: bottom left;
-            transition: transform 0.25s ease-in-out;
-            border-bottom: 2px solid var(--gold-primary);
-        }
-
-        #clap-overlay.clapping .clap-top {
-            transform: rotate(-30deg);
-        }
-
-        .clap-body {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .clap-body h2 {
-            font-family: 'Cinzel', serif;
-            color: var(--gold-primary);
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-        }
-
-        /* --- ANIMATION PLUIE DE CLAPS & INTERACTION NIKON --- */
-        .falling-clap {
-            position: fixed;
-            z-index: 99998;
-            color: var(--gold-primary);
-            font-size: 2.2rem;
-            pointer-events: auto;
-            cursor: grab;
-            user-select: none;
-            filter: drop-shadow(0 0 12px var(--gold-primary));
-            transition: transform 0.1s ease;
-        }
-        .falling-clap:active {
-            cursor: grabbing;
-        }
-
-        #nikon-interactive-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(5, 5, 8, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 99990;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #nikon-interactive-overlay.active {
-            display: flex;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .target-zone {
-            width: 80vw;
-            max-width: 720px;
-            aspect-ratio: 16 / 9;
-            border: 3px dashed var(--gold-primary);
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(243, 198, 73, 0.03);
-            box-shadow: 0 0 40px rgba(243, 198, 73, 0.2);
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .target-zone.hovered {
-            background: rgba(243, 198, 73, 0.15);
-            border-style: solid;
-            box-shadow: var(--gold-glow);
-            transform: scale(1.02);
-        }
-
-        .instruction-text {
-            font-family: 'Cinzel', serif;
-            color: var(--gold-primary);
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(243, 198, 73, 0.5);
-            pointer-events: none;
-        }
-
-        /* --- ANIMATION BOUTON VOLANT --- */
-        .flying-clap {
-            position: fixed;
-            z-index: 99999;
-            pointer-events: none;
-            background: var(--gold-gradient);
-            color: #000;
-            font-weight: bold;
-            border-radius: 10px;
-            padding: 12px 24px;
-            box-shadow: 0 0 30px var(--gold-primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: 'Cinzel', serif;
-            animation: flyAndClap 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes flyAndClap {
-            0% {
-                transform: translate(0, 0) scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            30% {
-                transform: translate(calc(50vw - 50% - var(--startX)), calc(20vh - var(--startY))) scale(1.4) rotate(180deg);
-                background: #000;
-                color: var(--gold-primary);
-                border: 2px solid var(--gold-primary);
-                border-radius: 6px;
-            }
-            60% {
-                transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(2) rotate(360deg);
-            }
-            80% {
-                transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(2.3) rotate(340deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(0) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* PARTICULES DE CLIC */
-        .sparkle {
-            position: fixed;
-            width: 8px;
-            height: 8px;
-            background: var(--gold-primary);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 99999;
-            box-shadow: 0 0 10px var(--gold-primary);
-            animation: explodeSparkle 0.6s ease-out forwards;
-        }
-
-        @keyframes explodeSparkle {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
-        }
-
-        /* --- HEADER & NAVIGATION --- */
-        header {
-            position: sticky;
-            top: 0;
-            background: rgba(7, 7, 9, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            z-index: 1000;
-            padding: 1.2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .logo {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            background: var(--gold-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        nav {
-            display: flex;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 6px;
-            border-radius: 30px;
-            border: 1px solid var(--glass-border);
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 20px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .nav-btn:hover, .nav-btn.active {
-            color: #fff;
-            background: rgba(243, 198, 73, 0.18);
-            box-shadow: 0 0 20px rgba(243, 198, 73, 0.25);
-        }
-
-        /* --- BANDE DÉFILANTE CINÉMA --- */
-        .film-ticker-container {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 1px solid var(--border-gold);
-            border-bottom: 1px solid var(--border-gold);
-            overflow: hidden;
-            padding: 12px 0;
-            position: relative;
-        }
-
-        .film-track {
-            display: flex;
-            width: max-content;
-            animation: scrollFilm 25s linear infinite;
-        }
-
-        .film-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 0 30px;
-            font-family: 'Cinzel', serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--gold-primary);
-            letter-spacing: 2px;
-            border-right: 1px dashed rgba(243, 198, 73, 0.3);
-        }
-
-        .film-item i {
-            font-size: 1.1rem;
-            filter: drop-shadow(0 0 5px var(--gold-primary));
-        }
-
-        @keyframes scrollFilm {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* --- CONTENEUR PRINCIPAL --- */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-title {
-            font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid var(--border-gold);
-            padding-bottom: 15px;
-        }
-
-        .section-title i {
-            color: var(--gold-primary);
-        }
-
-        /* --- CARTE DE PROJET --- */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 28px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--gold-primary);
-            box-shadow: var(--gold-glow);
-        }
-
-        .card-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--gold-gradient);
-            color: #000;
-            font-weight: 800;
-            font-size: 0.75rem;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-transform: uppercase;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        .status-casting {
-            background: rgba(243, 198, 73, 0.12);
-            color: var(--gold-primary);
-            border: 1px solid var(--gold-primary);
-        }
-
-        .card h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.4rem;
-            margin: 15px 0 10px 0;
-            color: #fff;
-        }
-
-        .card-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 0.85rem;
-            color: var(--gold-primary);
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .card-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .card-desc {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        /* --- LECTEUR VIDÉO YOUTUBE INTEGRÉ --- */
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 14px;
-            border: 1px solid var(--border-gold);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
-        }
-
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        .card-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 14px;
-            text-align: center;
-            background: transparent;
-            border: 1px solid var(--gold-primary);
-            color: var(--gold-primary);
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-        }
-
-        .btn-action:hover {
-            background: var(--gold-gradient);
-            color: #000;
-            box-shadow: var(--gold-glow);
-        }
-
-        .btn-secondary {
-            border-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-muted);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            box-shadow: none;
-        }
-
-        /* --- FORMULAIRES --- */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--gold-primary);
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: #fff;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .form-group select option {
-            background: #121216;
-            color: #fff;
-        }
-
-        .form-group input[type="file"] {
-            padding: 10px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: var(--gold-primary);
-            box-shadow: 0 0 15px rgba(243, 198, 73, 0.25);
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        /* SECTION NEWSLETTER DESIGNE EN 2026 */
-        .newsletter-section {
-            margin-top: 60px;
-            background: linear-gradient(135deg, rgba(20, 20, 28, 0.8), rgba(10, 10, 14, 0.9));
-            border: 1px solid var(--border-gold);
-            border-radius: 24px;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        .newsletter-section::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(243,198,73,0.08) 0%, transparent 60%);
-            pointer-events: none;
-        }
-
-        .newsletter-form {
-            display: flex;
-            gap: 12px;
-            max-width: 500px;
-            margin: 25px auto 0 auto;
-        }
-
-        .newsletter-form input {
-            flex: 1;
-            padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-gold);
-            border-radius: 12px;
-            color: #fff;
-            outline: none;
-        }
-
-        .newsletter-form button {
-            width: auto;
-            padding: 0 25px;
-            white-space: nowrap;
-        }
-
-        /* --- MODALES --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: rgba(18, 18, 24, 0.95);
-            border: 1px solid var(--gold-primary);
-            box-shadow: var(--gold-glow);
-            border-radius: 20px;
-            padding: 35px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 18px;
-            right: 22px;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-
-        .close-modal:hover {
-            color: var(--gold-primary);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            margin-top: 80px;
-            border-top: 1px solid var(--glass-border);
-            background: rgba(4, 4, 6, 0.95);
-            padding: 40px 20px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        footer strong {
-            color: var(--gold-primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 600px) {
-            .newsletter-form {
-                flex-direction: column;
-            }
-            .newsletter-form button {
-                width: 100%;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NathanCinema — Plateforme Projets & Castings</title>
+<!-- Google Fonts & FontAwesome Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Cinzel:wght@600;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+--bg-dark: #070709;
+--bg-card: rgba(18, 18, 24, 0.65);
+--gold-primary: #f3c649;
+--gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+--gold-glow: 0 0 30px rgba(243, 198, 73, 0.4);
+--text-main: #f0f0f5;
+--text-muted: #a0a0b0;
+--border-gold: rgba(243, 198, 73, 0.25);
+--glass-bg: rgba(255, 255, 255, 0.03);
+--glass-border: rgba(255, 255, 255, 0.08);
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+background-color: var(--bg-dark);
+background-image:
+radial-gradient(circle at 15% 20%, rgba(243, 198, 73, 0.05) 0%, transparent 40%),
+radial-gradient(circle at 85% 80%, rgba(191, 149, 63, 0.05) 0%, transparent 40%);
+color: var(--text-main);
+overflow-x: hidden;
+min-height: 100vh;
+transition: width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
+}
+
+/* ANIMATION TREMBLEMENT SITE POUR NEWSLETTER */
+@keyframes shakeSite {
+0% { transform: translate(0, 0) rotate(0deg); }
+10% { transform: translate(-12px, -12px) rotate(-1deg); }
+20% { transform: translate(12px, 8px) rotate(1deg); }
+30% { transform: translate(-10px, 10px) rotate(0deg); }
+40% { transform: translate(10px, -8px) rotate(1deg); }
+50% { transform: translate(-8px, -8px) rotate(-1deg); }
+60% { transform: translate(8px, 8px) rotate(0deg); }
+70% { transform: translate(-5px, 5px) rotate(0.5deg); }
+80% { transform: translate(5px, -5px) rotate(-0.5deg); }
+90% { transform: translate(-2px, 2px) rotate(0deg); }
+100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+.shake-active {
+animation: shakeSite 0.8s ease-in-out;
+}
+
+/* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
+body.mode-pc {
+width: 100% !important;
+max-width: 100% !important;
+margin: 0 auto !important;
+border: none !important;
+border-radius: 0 !important;
+}
+
+body.mode-tablette {
+width: 100% !important;
+max-width: 768px !important;
+margin: 20px auto !important;
+border: 2px solid var(--border-gold) !important;
+border-radius: 20px !important;
+box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+}
+
+body.mode-telephone {
+width: 100% !important;
+max-width: 375px !important;
+margin: 20px auto !important;
+border: 2px solid var(--border-gold) !important;
+border-radius: 30px !important;
+box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+}
+
+.view-mode-container {
+position: relative;
+display: inline-block;
+}
+
+.view-mode-btn {
+background: rgba(243, 198, 73, 0.1);
+border: 1px solid var(--gold-primary);
+color: var(--gold-primary);
+padding: 8px 16px;
+border-radius: 20px;
+font-weight: 700;
+font-size: 0.85rem;
+cursor: pointer;
+display: flex;
+align-items: center;
+gap: 8px;
+transition: all 0.3s ease;
+}
+
+.view-mode-btn:hover {
+background: var(--gold-gradient);
+color: #000;
+}
+
+.view-mode-menu {
+display: none;
+position: absolute;
+right: 0;
+top: 110%;
+background: rgba(18, 18, 24, 0.95);
+border: 1px solid var(--border-gold);
+backdrop-filter: blur(10px);
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+z-index: 1001;
+min-width: 150px;
+}
+
+.view-mode-menu.show {
+display: block;
+}
+
+.view-mode-option {
+padding: 10px 15px;
+color: var(--text-main);
+font-size: 0.85rem;
+display: flex;
+align-items: center;
+gap: 10px;
+cursor: pointer;
+transition: background 0.2s ease;
+}
+
+.view-mode-option:hover {
+background: rgba(243, 198, 73, 0.2);
+color: var(--gold-primary);
+}
+
+/* --- OVERLAY ANIMATION CLAP DE CINÉMA --- */
+#clap-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(0, 0, 0, 0.92);
+backdrop-filter: blur(10px);
+z-index: 9999;
+display: flex;
+justify-content: center;
+align-items: center;
+pointer-events: none;
+opacity: 0;
+transition: opacity 0.25s ease;
+}
+
+#clap-overlay.active {
+opacity: 1;
+pointer-events: all;
+}
+
+.clapperboard {
+width: 280px;
+background: #141418;
+border: 2px solid var(--gold-primary);
+border-radius: 16px;
+overflow: hidden;
+box-shadow: 0 0 50px rgba(243, 198, 73, 0.5);
+transform: scale(0.9);
+transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#clap-overlay.active .clapperboard {
+transform: scale(1.1);
+}
+
+.clap-top {
+height: 50px;
+background: repeating-linear-gradient(-45deg, #000, #000 20px, var(--gold-primary) 20px, var(--gold-primary) 40px);
+transform-origin: bottom left;
+transition: transform 0.25s ease-in-out;
+border-bottom: 2px solid var(--gold-primary);
+}
+
+#clap-overlay.clapping .clap-top {
+transform: rotate(-30deg);
+}
+
+.clap-body {
+padding: 20px;
+text-align: center;
+}
+
+.clap-body h2 {
+font-family: 'Cinzel', serif;
+color: var(--gold-primary);
+font-size: 1.4rem;
+letter-spacing: 2px;
+}
+
+/* --- ANIMATION PLUIE DE CLAPS & INTERACTION NIKON --- */
+.falling-clap {
+position: fixed;
+z-index: 99998;
+color: var(--gold-primary);
+font-size: 2.2rem;
+pointer-events: auto;
+cursor: grab;
+user-select: none;
+filter: drop-shadow(0 0 12px var(--gold-primary));
+transition: transform 0.1s ease;
+}
+.falling-clap:active {
+cursor: grabbing;
+}
+
+#nikon-interactive-overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(5, 5, 8, 0.92);
+backdrop-filter: blur(12px);
+z-index: 99990;
+display: none;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+}
+
+#nikon-interactive-overlay.active {
+display: flex;
+animation: fadeIn 0.4s ease;
+}
+
+.target-zone {
+width: 80vw;
+max-width: 720px;
+aspect-ratio: 16 / 9;
+border: 3px dashed var(--gold-primary);
+border-radius: 20px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+background: rgba(243, 198, 73, 0.03);
+box-shadow: 0 0 40px rgba(243, 198, 73, 0.2);
+transition: all 0.3s ease;
+position: relative;
+}
+
+.target-zone.hovered {
+background: rgba(243, 198, 73, 0.15);
+border-style: solid;
+box-shadow: var(--gold-glow);
+transform: scale(1.02);
+}
+
+.instruction-text {
+font-family: 'Cinzel', serif;
+color: var(--gold-primary);
+font-size: 1.3rem;
+margin-bottom: 20px;
+text-align: center;
+text-shadow: 0 0 10px rgba(243, 198, 73, 0.5);
+pointer-events: none;
+}
+
+/* --- ANIMATION BOUTON VOLANT --- */
+.flying-clap {
+position: fixed;
+z-index: 99999;
+pointer-events: none;
+background: var(--gold-gradient);
+color: #000;
+font-weight: bold;
+border-radius: 10px;
+padding: 12px 24px;
+box-shadow: 0 0 30px var(--gold-primary);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+font-family: 'Cinzel', serif;
+animation: flyAndClap 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes flyAndClap {
+0% {
+transform: translate(0, 0) scale(1) rotate(0deg);
+opacity: 1;
+}
+30% {
+transform: translate(calc(50vw - 50% - var(--startX)), calc(20vh - var(--startY))) scale(1.4) rotate(180deg);
+background: #000;
+color: var(--gold-primary);
+border: 2px solid var(--gold-primary);
+border-radius: 6px;
+}
+60% {
+transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(2) rotate(360deg);
+}
+80% {
+transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(2.3) rotate(340deg);
+opacity: 1;
+}
+100% {
+transform: translate(calc(50vw - 50% - var(--startX)), calc(50vh - 50% - var(--startY))) scale(0) rotate(360deg);
+opacity: 0;
+}
+}
+
+/* PARTICULES DE CLIC ET FEUX D'ARTIFICE */
+.sparkle, .firework-particle {
+position: fixed;
+border-radius: 50%;
+pointer-events: none;
+z-index: 999999;
+animation: explodeSparkle 0.8s ease-out forwards;
+}
+
+.sparkle {
+width: 8px;
+height: 8px;
+background: var(--gold-primary);
+box-shadow: 0 0 10px var(--gold-primary);
+}
+
+@keyframes explodeSparkle {
+0% { transform: translate(0, 0) scale(1); opacity: 1; }
+100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+/* --- HEADER & NAVIGATION --- */
+header {
+position: sticky;
+top: 0;
+background: rgba(7, 7, 9, 0.75);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+border-bottom: 1px solid var(--glass-border);
+z-index: 1000;
+padding: 1.2rem 5%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 15px;
+}
+
+.logo {
+font-family: 'Cinzel', serif;
+font-size: 1.8rem;
+font-weight: 900;
+background: var(--gold-gradient);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+text-transform: uppercase;
+letter-spacing: 3px;
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+nav {
+display: flex;
+gap: 12px;
+background: rgba(255, 255, 255, 0.03);
+padding: 6px;
+border-radius: 30px;
+border: 1px solid var(--glass-border);
+flex-wrap: wrap;
+justify-content: center;
+}
+
+.nav-btn {
+background: transparent;
+border: none;
+color: var(--text-muted);
+font-size: 0.9rem;
+font-weight: 600;
+padding: 10px 20px;
+cursor: pointer;
+border-radius: 20px;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-btn:hover, .nav-btn.active {
+color: #fff;
+background: rgba(243, 198, 73, 0.18);
+box-shadow: 0 0 20px rgba(243, 198, 73, 0.25);
+}
+
+/* --- BANDE DÉFILANTE CINÉMA --- */
+.film-ticker-container {
+width: 100%;
+background: rgba(0, 0, 0, 0.8);
+border-top: 1px solid var(--border-gold);
+border-bottom: 1px solid var(--border-gold);
+overflow: hidden;
+padding: 12px 0;
+position: relative;
+}
+
+.film-track {
+display: flex;
+width: max-content;
+animation: scrollFilm 25s linear infinite;
+}
+
+.film-item {
+display: flex;
+align-items: center;
+gap: 15px;
+padding: 0 30px;
+font-family: 'Cinzel', serif;
+font-weight: 700;
+font-size: 0.85rem;
+color: var(--gold-primary);
+letter-spacing: 2px;
+border-right: 1px dashed rgba(243, 198, 73, 0.3);
+}
+
+.film-item i {
+font-size: 1.1rem;
+filter: drop-shadow(0 0 5px var(--gold-primary));
+}
+
+@keyframes scrollFilm {
+0% { transform: translateX(0); }
+100% { transform: translateX(-50%); }
+}
+
+/* --- CONTENEUR PRINCIPAL --- */
+.container {
+max-width: 1200px;
+margin: 40px auto;
+padding: 0 20px;
+}
+
+.section-title {
+font-family: 'Cinzel', serif;
+font-size: 2.2rem;
+margin-bottom: 30px;
+display: flex;
+align-items: center;
+gap: 15px;
+border-bottom: 1px solid var(--border-gold);
+padding-bottom: 15px;
+}
+
+.section-title i {
+color: var(--gold-primary);
+}
+
+/* --- CARTE DE PROJET --- */
+.cards-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+gap: 30px;
+}
+
+.card {
+background: var(--bg-card);
+border: 1px solid var(--glass-border);
+border-radius: 20px;
+padding: 28px;
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+position: relative;
+overflow: hidden;
+transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.card:hover {
+transform: translateY(-8px);
+border-color: var(--gold-primary);
+box-shadow: var(--gold-glow);
+}
+
+.card-badge {
+position: absolute;
+top: 20px;
+right: 20px;
+background: var(--gold-gradient);
+color: #000;
+font-weight: 800;
+font-size: 0.75rem;
+padding: 6px 14px;
+border-radius: 20px;
+text-transform: uppercase;
+}
+
+.status-badge {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: 0.75rem;
+font-weight: 700;
+padding: 6px 12px;
+border-radius: 12px;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-top: 5px;
+}
+
+.status-casting {
+background: rgba(243, 198, 73, 0.12);
+color: var(--gold-primary);
+border: 1px solid var(--gold-primary);
+}
+
+.card h3 {
+font-family: 'Cinzel', serif;
+font-size: 1.4rem;
+margin: 15px 0 10px 0;
+color: #fff;
+}
+
+.card-meta {
+display: flex;
+gap: 15px;
+font-size: 0.85rem;
+color: var(--gold-primary);
+margin-bottom: 15px;
+flex-wrap: wrap;
+}
+
+.card-meta span {
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.card-desc {
+color: var(--text-muted);
+font-size: 0.95rem;
+line-height: 1.6;
+margin-bottom: 20px;
+}
+
+/* --- LECTEUR VIDÉO YOUTUBE INTEGRÉ --- */
+.video-container {
+position: relative;
+width: 100%;
+padding-bottom: 56.25%;
+height: 0;
+overflow: hidden;
+border-radius: 14px;
+border: 1px solid var(--border-gold);
+box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+margin-bottom: 20px;
+}
+
+.video-container iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+border: 0;
+}
+
+.card-actions {
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+.btn-action {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+width: 100%;
+padding: 14px;
+text-align: center;
+background: transparent;
+border: 1px solid var(--gold-primary);
+color: var(--gold-primary);
+border-radius: 12px;
+font-weight: 700;
+cursor: pointer;
+transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+text-decoration: none;
+}
+
+.btn-action:hover {
+background: var(--gold-gradient);
+color: #000;
+box-shadow: var(--gold-glow);
+}
+
+.btn-secondary {
+border-color: rgba(255, 255, 255, 0.15);
+color: var(--text-muted);
+}
+
+.btn-secondary:hover {
+background: rgba(255, 255, 255, 0.08);
+color: #fff;
+box-shadow: none;
+}
+
+/* --- FORMULAIRES --- */
+.form-group {
+margin-bottom: 20px;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 8px;
+color: var(--gold-primary);
+font-weight: 600;
+font-size: 0.9rem;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+width: 100%;
+padding: 14px 16px;
+background: rgba(255, 255, 255, 0.03);
+border: 1px solid var(--glass-border);
+border-radius: 12px;
+color: #fff;
+outline: none;
+transition: all 0.3s ease;
+}
+
+.form-group select option {
+background: #121216;
+color: #fff;
+}
+
+.form-group input[type="file"] {
+padding: 10px;
+font-size: 0.85rem;
+color: var(--text-muted);
+cursor: pointer;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+border-color: var(--gold-primary);
+box-shadow: 0 0 15px rgba(243, 198, 73, 0.25);
+background: rgba(255, 255, 255, 0.06);
+}
+
+/* SECTION NEWSLETTER DESIGNE EN 2026 */
+.newsletter-section {
+margin-top: 60px;
+background: linear-gradient(135deg, rgba(20, 20, 28, 0.8), rgba(10, 10, 14, 0.9));
+border: 1px solid var(--border-gold);
+border-radius: 24px;
+padding: 40px;
+text-align: center;
+position: relative;
+overflow: hidden;
+backdrop-filter: blur(12px);
+box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.newsletter-section::before {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: radial-gradient(circle, rgba(243,198,73,0.08) 0%, transparent 60%);
+pointer-events: none;
+}
+
+.newsletter-form {
+display: flex;
+gap: 12px;
+max-width: 500px;
+margin: 25px auto 0 auto;
+}
+
+.newsletter-form input {
+flex: 1;
+padding: 14px 20px;
+background: rgba(255, 255, 255, 0.05);
+border: 1px solid var(--border-gold);
+border-radius: 12px;
+color: #fff;
+outline: none;
+}
+
+.newsletter-form button {
+width: auto;
+padding: 0 25px;
+white-space: nowrap;
+}
+
+/* --- MODALES --- */
+.modal {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: rgba(0, 0, 0, 0.88);
+backdrop-filter: blur(12px);
+-webkit-backdrop-filter: blur(12px);
+z-index: 10000;
+justify-content: center;
+align-items: center;
+}
+
+.modal.active {
+display: flex;
+animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+background: rgba(18, 18, 24, 0.95);
+border: 1px solid var(--gold-primary);
+box-shadow: var(--gold-glow);
+border-radius: 20px;
+padding: 35px;
+width: 90%;
+max-width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+position: relative;
+}
+
+.close-modal {
+position: absolute;
+top: 18px;
+right: 22px;
+color: var(--text-muted);
+font-size: 1.5rem;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+color: var(--gold-primary);
+}
+
+/* --- FOOTER --- */
+footer {
+margin-top: 80px;
+border-top: 1px solid var(--glass-border);
+background: rgba(4, 4, 6, 0.95);
+padding: 40px 20px;
+text-align: center;
+color: var(--text-muted);
+font-size: 0.9rem;
+}
+
+footer strong {
+color: var(--gold-primary);
+}
+
+.tab-content {
+display: none;
+}
+
+.tab-content.active {
+display: block;
+animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(12px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+.newsletter-form {
+flex-direction: column;
+}
+.newsletter-form button {
+width: 100%;
+}
+}
+</style>
 </head>
 <body class="mode-pc">
 
-    <!-- OVERLAY ANIMATION INTERACTIVE NIKON FESTIVAL (PLUIE DE CLAPS & CIBLE) -->
-    <div id="nikon-interactive-overlay">
-        <p class="instruction-text"><i class="fa-solid fa-hand-pointer"></i> Attrape un clap et glisse-le dans la zone pour lancer la bande-annonce !</p>
-        <div class="target-zone" id="target-zone">
-            <i class="fa-solid fa-film" style="font-size: 3rem; color: var(--gold-primary); margin-bottom: 10px; opacity: 0.6;"></i>
-            <span style="color: var(--text-muted); font-family: 'Cinzel', serif;">Zone d'activation vidéo</span>
-        </div>
-        <button class="btn-action btn-secondary" style="position: absolute; bottom: 30px; width: auto; padding: 8px 20px;" onclick="closeNikonInteractive()">Annuler</button>
-    </div>
-
-    <!-- OVERLAY ANIMATION CLAP DE CINÉMA STANDARD -->
-    <div id="clap-overlay" class="active clapping">
-        <div class="clapperboard">
-            <div class="clap-top"></div>
-            <div class="clap-body">
-                <h2>NATHANCINEMA</h2>
-                <p style="color: #aaa; font-size: 0.8rem; margin-top: 5px;">ACTION !</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- HEADER / NAVIGATION -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-clapperboard"></i> NathanCinema
-        </div>
-        <nav>
-            <button class="nav-btn active" onclick="switchTab('annonces', this)">Annonces & Castings</button>
-            <button class="nav-btn" onclick="switchTab('soumettre', this)">Proposer une annonce</button>
-            <button class="nav-btn" onclick="switchTab('apropos', this)">À Propos</button>
-        </nav>
-        
-        <!-- BOUTON MODE DE LECTURE EN HAUT À DROITE -->
-        <div class="view-mode-container">
-            <button class="view-mode-btn" onclick="toggleViewMenu()">
-                <i class="fa-solid fa-display"></i> Mode de lecture
-            </button>
-            <div class="view-mode-menu" id="viewModeMenu">
-                <div class="view-mode-option" onclick="setViewMode('pc')">
-                    <i class="fa-solid fa-desktop"></i> PC
-                </div>
-                <div class="view-mode-option" onclick="setViewMode('tablette')">
-                    <i class="fa-solid fa-tablet-screen-button"></i> Tablette
-                </div>
-                <div class="view-mode-option" onclick="setViewMode('telephone')">
-                    <i class="fa-solid fa-mobile-screen-button"></i> Téléphone
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- BANDE DÉFILANTE CINÉMA -->
-    <div class="film-ticker-container">
-        <div class="film-track">
-            <div class="film-item"><i class="fa-solid fa-film"></i> PROJETS EN COURS</div>
-            <div class="film-item"><i class="fa-solid fa-clapperboard"></i> CASTINGS OUVERTS</div>
-            <div class="film-item"><i class="fa-solid fa-camera-retro"></i> NIKON FILM FESTIVAL 2026</div>
-            <div class="film-item"><i class="fa-solid fa-user-ninja"></i> RECHERCHE RÔLES ET FIGURANTS</div>
-            <div class="film-item"><i class="fa-solid fa-film"></i> PROJETS EN COURS</div>
-            <div class="film-item"><i class="fa-solid fa-clapperboard"></i> CASTINGS OUVERTS</div>
-            <div class="film-item"><i class="fa-solid fa-camera-retro"></i> NIKON FILM FESTIVAL 2026</div>
-            <div class="film-item"><i class="fa-solid fa-user-ninja"></i> RECHERCHE RÔLES ET FIGURANTS</div>
-        </div>
-    </div>
-
-    <!-- CONTENU PRINCIPAL -->
-    <div class="container">
-
-        <!-- ONGLET 1: ANNONCES & CASTINGS -->
-        <section id="annonces" class="tab-content active">
-            <h2 class="section-title"><i class="fa-solid fa-bullhorn"></i> Annonces Récentes</h2>
-            
-            <div class="cards-grid">
-                <article class="card">
-                    <span class="card-badge">Demande de soutien & Castings</span>
-                    <h3>Court-Métrage — Nikon Festival 2026</h3>
-                    
-                    <div class="status-badge status-casting">
-                        <i class="fa-solid fa-spinner fa-spin"></i> Phase : Pré-production / Casting
-                    </div>
-
-                    <div class="card-meta" style="margin-top: 15px;">
-                        <span><i class="fa-regular fa-clock"></i> Max 2 minutes</span>
-                        <span><i class="fa-regular fa-calendar"></i> Sept / Oct 2026</span>
-                    </div>
-                    
-                    <p class="card-desc">
-                        Demande de soutien pour court-métrage de max 2 minutes pour le Festival Nikon. Le tournage se déroulera peut-être en septembre ou octobre 2026 (dates à revoir).<br><br>
-                        <strong>Recherche :</strong> Nous recherchons activement des <strong>rôles principaux / secondaires</strong> ainsi que des <strong>figurants</strong> pour le projet.
-                    </p>
-
-                    <!-- LECTEUR VIDÉO YOUTUBE INTEGRÉ DANS L'ARTICLE -->
-                    <p style="color: var(--gold-primary); font-weight: 700; margin-bottom: 8px; font-size: 0.9rem;">
-                        <i class="fa-solid fa-film"></i> Bande annonce officielle Nikon Festival 2026
-                    </p>
-                    <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/eGN_wC-ZJGA" title="Bande annonce officielle Nikon Festival 2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-
-                    <div class="card-actions">
-                        <button class="btn-action" onclick="animateAndExecute(event, () => openApplyModal('Court-Métrage Nikon Festival 2026'))">Postuler (Rôles & Figuration)</button>
-                        <button class="btn-action btn-secondary" onclick="startNikonInteractiveExperience()"><i class="fa-solid fa-circle-play"></i> Lancer l'expérience Nikon (Attrape le Clap)</button>
-                    </div>
-                </article>
-            </div>
-
-            <!-- SECTION NEWSLETTER NOUVELLE DESIGN 2026 -->
-            <div class="newsletter-section">
-                <h3 style="font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--gold-primary); margin-bottom: 10px;">
-                    <i class="fa-regular fa-envelope"></i> Restez au cœur de l'action
-                </h3>
-                <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 0.95rem;">
-                    Abonnez-vous à la newsletter pour recevoir en avant-première les nouveaux castings, appels à projets et actualités du cinéma indépendant.
-                </p>
-                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                    <input type="email" id="newsletter-email" placeholder="Votre adresse e-mail..." required>
-                    <button type="submit" class="btn-action"><i class="fa-solid fa-paper-plane"></i> S'abonner</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ONGLET 2: PROPOSER UN PROJET -->
-        <section id="soumettre" class="tab-content">
-            <h2 class="section-title"><i class="fa-solid fa-paper-plane"></i> Proposer une annonce / demande</h2>
-            <div class="card" style="max-width: 700px; margin: 0 auto;">
-                <form onsubmit="sendProposal(event)">
-                    <div class="form-group">
-                        <label>Type d'annonce</label>
-                        <select id="prop-type" required>
-                            <option value="">Sélectionner...</option>
-                            <option value="Casting Comédien(ne) / Figuration">Casting Comédien(ne) / Figuration</option>
-                            <option value="Recherche Équipe Technique">Recherche Équipe Technique</option>
-                            <option value="Demande de soutien / Financement">Demande de soutien / Financement</option>
-                            <option value="Matériel / Lieu de tournage">Matériel / Lieu de tournage</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Titre du projet</label>
-                        <input type="text" id="prop-titre" placeholder="Ex: Tournage Court-métrage" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Description détaillée</label>
-                        <textarea id="prop-desc" rows="5" placeholder="Expliquez votre projet, les profils recherchés et les dates..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-action">Envoyer ma proposition</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ONGLET 3: À PROPOS -->
-        <section id="apropos" class="tab-content">
-            <h2 class="section-title"><i class="fa-solid fa-circle-info"></i> À Propos de NathanCinema</h2>
-            <div class="card">
-                <h3>La plateforme du cinéma indépendant</h3>
-                <p class="card-desc" style="margin-top: 15px;">
-                    Bienvenue sur <strong>NathanCinema</strong>. Ce site regroupe toutes les demandes de soutien, appels à projets et castings pour des tournages de courts-métrages, longs-métrages et festivals.
-                </p>
-                <p class="card-desc">
-                    Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong> ainsi que ses administrateurs.
-                </p>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- MODALE CANDIDATURE -->
-    <div id="apply-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeApplyModal()">&times;</span>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 20px;">Formulaire de Postulation</h3>
-            <p id="modal-project-title" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
-            
-            <form onsubmit="sendCandidature(event)">
-                <div class="form-group">
-                    <label>Nom</label>
-                    <input type="text" id="cand-nom" placeholder="Votre nom" required>
-                </div>
-                <div class="form-group">
-                    <label>Prénom</label>
-                    <input type="text" id="cand-prenom" placeholder="Votre prénom" required>
-                </div>
-                <div class="form-group">
-                    <label>Numéro de téléphone</label>
-                    <input type="tel" id="cand-tel" placeholder="06 12 34 56 78" required>
-                </div>
-
-                <div class="form-group">
-                    <label><i class="fa-solid fa-image"></i> Photo de profil / Headshot</label>
-                    <input type="file" id="cand-photo" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label><i class="fa-solid fa-file-pdf"></i> CV / Bande-Démo (Optionnel)</label>
-                    <input type="file" id="cand-doc" accept=".pdf,.doc,.docx,video/*">
-                </div>
-
-                <button type="submit" class="btn-action">Envoyer ma candidature par Email</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODALE TEASER VIDÉO YOUTUBE -->
-    <div id="teaser-modal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-modal" onclick="closeTeaserModal()">&times;</span>
-            <h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 15px;">Bande Annonce Officielle Nikon Festival 2026</h3>
-            
-            <div class="video-container" style="margin-top: 15px;">
-                <iframe src="https://www.youtube.com/embed/eGN_wC-ZJGA" title="Bande annonce officielle Nikon Festival 2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-
-            <button class="btn-action" style="margin-top: 20px;" onclick="closeTeaserModal()">Fermer</button>
-        </div>
-    </div>
-
-    <!-- FOOTER -->
-    <footer>
-        <p>&copy; 2026 <strong>NathanCinema</strong> — Tous droits réservés.</p>
-        <p style="margin-top: 8px; font-size: 0.8rem;">Site web géré par <strong>Nathan CARER</strong> et des administrateurs.</p>
-    </footer>
-
-    <!-- JAVASCRIPT ANIMATIONS & LOGIQUE -->
-    <script>
-        let currentProjectName = "";
-
-        // GESTION DU MODE DE LECTURE
-        function toggleViewMenu() {
-            const menu = document.getElementById('viewModeMenu');
-            menu.classList.toggle('show');
-        }
-
-        function setViewMode(mode) {
-            document.body.classList.remove('mode-pc', 'mode-tablette', 'mode-telephone');
-            document.body.classList.add('mode-' + mode);
-            document.getElementById('viewModeMenu').classList.remove('show');
-        }
-
-        // Ferme le menu si l'utilisateur clique en dehors
-        window.addEventListener('click', function(e) {
-            if (!e.target.closest('.view-mode-container')) {
-                const menu = document.getElementById('viewModeMenu');
-                if (menu) menu.classList.remove('show');
-            }
-        });
-
-        // EFFET SONORE (Son de Clap via Web Audio API)
-        function playClapSound() {
-            try {
-                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const bufferSize = audioCtx.sampleRate * 0.05;
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-
-                const noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.value = 1200;
-
-                const gain = audioCtx.createGain();
-                gain.gain.setValueAtTime(1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-
-                noise.connect(filter);
-                filter.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                noise.start();
-            } catch(e) {
-                // Fallback silencieux
-            }
-        }
-
-        // ANIMATION BOUTON VOLANT -> TRANSFORMÉ EN CLAP
-        function animateAndExecute(e, actionCallback) {
-            const btn = e.currentTarget;
-            const rect = btn.getBoundingClientRect();
-
-            for(let i = 0; i < 12; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.style.left = e.clientX + 'px';
-                sparkle.style.top = e.clientY + 'px';
-                const angle = Math.random() * Math.PI * 2;
-                const dist = 40 + Math.random() * 60;
-                sparkle.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
-                sparkle.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-                document.body.appendChild(sparkle);
-                setTimeout(() => sparkle.remove(), 600);
-            }
-
-            const flyingClap = document.createElement('div');
-            flyingClap.className = 'flying-clap';
-            flyingClap.innerHTML = '<i class="fa-solid fa-clapperboard"></i> ACTION !';
-            flyingClap.style.left = rect.left + 'px';
-            flyingClap.style.top = rect.top + 'px';
-            flyingClap.style.width = rect.width + 'px';
-            flyingClap.style.height = rect.height + 'px';
-            flyingClap.style.setProperty('--startX', `${rect.left}px`);
-            flyingClap.style.setProperty('--startY', `${rect.top}px`);
-
-            document.body.appendChild(flyingClap);
-            playClapSound();
-
-            setTimeout(() => {
-                playClapSound();
-            }, 600);
-
-            setTimeout(() => {
-                flyingClap.remove();
-                if (actionCallback) actionCallback();
-            }, 1100);
-        }
-
-        // --- EXPÉRIENCE INTERACTIVE NIKON FESTIVAL (PLUIE DE CLAPS & DRAG-AND-DROP) ---
-        let activeFallingClaps = [];
-
-        function startNikonInteractiveExperience() {
-            const overlay = document.getElementById('nikon-interactive-overlay');
-            overlay.classList.add('active');
-            
-            // Générer des dizaines de claps qui tombent du ciel
-            for (let i = 0; i < 40; i++) {
-                setTimeout(() => {
-                    if (!overlay.classList.contains('active')) return;
-                    createFallingClap();
-                }, i * 150);
-            }
-
-            // Gestion du Drag Over la cible
-            const target = document.getElementById('target-zone');
-            target.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                target.classList.add('hovered');
-            });
-            target.addEventListener('dragleave', () => {
-                target.classList.remove('hovered');
-            });
-            target.addEventListener('drop', (e) => {
-                e.preventDefault();
-                target.classList.remove('hovered');
-                closeNikonInteractive();
-                openTeaserModal();
-            });
-        }
-
-        function createFallingClap() {
-            const clap = document.createElement('i');
-            clap.className = 'fa-solid fa-clapperboard falling-clap';
-            clap.draggable = true;
-            
-            const startX = Math.random() * (window.innerWidth - 60);
-            const duration = 3 + Math.random() * 4;
-            const delay = Math.random() * 0.5;
-
-            clap.style.left = startX + 'px';
-            clap.style.top = '-60px';
-            clap.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out`;
-
-            // Événements de Drag & Touch
-            clap.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', 'clap');
-                playClapSound();
-            });
-
-            // Clic direct d'urgence au cas où
-            clap.addEventListener('click', () => {
-                closeNikonInteractive();
-                openTeaserModal();
-            });
-
-            document.body.appendChild(clap);
-            activeFallingClaps.push(clap);
-
-            requestAnimationFrame(() => {
-                clap.style.top = (window.innerHeight + 80) + 'px';
-                clap.style.transform = `rotate(${Math.random() * 720 - 360}deg)`;
-            });
-
-            setTimeout(() => {
-                clap.remove();
-            }, duration * 1000);
-        }
-
-        function closeNikonInteractive() {
-            const overlay = document.getElementById('nikon-interactive-overlay');
-            overlay.classList.remove('active');
-            activeFallingClaps.forEach(clap => clap.remove());
-            activeFallingClaps = [];
-        }
-
-        // Animation globale du Clap de cinéma
-        function triggerClap(callback) {
-            const overlay = document.getElementById('clap-overlay');
-            overlay.classList.add('active');
-            overlay.classList.add('clapping');
-            
-            playClapSound();
-
-            setTimeout(() => {
-                overlay.classList.remove('clapping');
-            }, 250);
-
-            setTimeout(() => {
-                if (callback) callback();
-                overlay.classList.remove('active');
-            }, 600);
-        }
-
-        // Chargement initial
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                playClapSound();
-                document.getElementById('clap-overlay').classList.remove('clapping');
-                setTimeout(() => {
-                    document.getElementById('clap-overlay').classList.remove('active');
-                }, 300);
-            }, 300);
-        });
-
-        // Changement d'onglet
-        function switchTab(tabId, btnElement) {
-            triggerClap(() => {
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                document.querySelectorAll('.nav-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                document.getElementById(tabId).classList.add('active');
-                btnElement.classList.add('active');
-            });
-        }
-
-        // Modale Candidature
-        function openApplyModal(projetName) {
-            currentProjectName = projetName;
-            document.getElementById('modal-project-title').innerText = "Projet : " + projetName;
-            document.getElementById('apply-modal').classList.add('active');
-        }
-
-        function closeApplyModal() {
-            document.getElementById('apply-modal').classList.remove('active');
-        }
-
-        // Modale Teaser
-        function openTeaserModal() {
-            document.getElementById('teaser-modal').classList.add('active');
-        }
-
-        function closeTeaserModal() {
-            document.getElementById('teaser-modal').classList.remove('active');
-        }
-
-        // Envoi proposition de projet
-        function sendProposal(e) {
-            e.preventDefault();
-            const type = document.getElementById('prop-type').value;
-            const titre = document.getElementById('prop-titre').value;
-            const desc = document.getElementById('prop-desc').value;
-
-            const emailDest = "nathan.carer.pro@gmail.com";
-            const sujet = encodeURIComponent("Nouvelle Proposition : " + titre);
-            const corps = encodeURIComponent("Bonjour Nathan,\n\nVoici une nouvelle proposition de projet :\n\n- Type : " + type + "\n- Titre : " + titre + "\n\nDescription :\n" + desc + "\n\nCordialement,");
-
-            window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
-        }
-
-        // ENVOI DE LA CANDIDATURE
-        function sendCandidature(e) {
-            e.preventDefault();
-            const nom = document.getElementById('cand-nom').value;
-            const prenom = document.getElementById('cand-prenom').value;
-            const tel = document.getElementById('cand-tel').value;
-            const photoInput = document.getElementById('cand-photo');
-            const docInput = document.getElementById('cand-doc');
-
-            let filesInfo = "";
-            if (photoInput.files.length > 0) {
-                filesInfo += "\n- Photo jointe : " + photoInput.files[0].name;
-            }
-            if (docInput.files.length > 0) {
-                filesInfo += "\n- Document joint : " + docInput.files[0].name;
-            }
-
-            const emailDest = "nathan.carer.pro@gmail.com";
-            const sujet = encodeURIComponent("Candidature - " + currentProjectName);
-            const corps = encodeURIComponent("Bonjour Nathan,\n\nJe souhaite postuler au projet : " + currentProjectName + "\n\n- Nom : " + nom + "\n- Prénom : " + prenom + "\n- Téléphone : " + tel + filesInfo + "\n\nCordialement,");
-
-            window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
-        }
-
-        // SOUSCRIPTION NEWSLETTER
-        function subscribeNewsletter(e) {
-            e.preventDefault();
-            const email = document.getElementById('newsletter-email').value;
-            const emailDest = "nathan.carer.pro@gmail.com";
-            const sujet = encodeURIComponent("Nouvelle Inscription Newsletter");
-            const corps = encodeURIComponent("Bonjour Nathan,\n\nUn nouvel utilisateur souhaite s'abonner à la newsletter :\n\n- Adresse e-mail : " + email);
-
-            window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
-            document.getElementById('newsletter-email').value = "";
-        }
-    </script>
+<!-- OVERLAY ANIMATION INTERACTIVE NIKON FESTIVAL (PLUIE DE CLAPS & CIBLE) -->
+<div id="nikon-interactive-overlay">
+<p class="instruction-text"><i class="fa-solid fa-hand-pointer"></i> Attrape un clap et glisse-le dans la zone pour lancer la bande-annonce !</p>
+<div class="target-zone" id="target-zone">
+<i class="fa-solid fa-film" style="font-size: 3rem; color: var(--gold-primary); margin-bottom: 10px; opacity: 0.6;"></i>
+<span style="color: var(--text-muted); font-family: 'Cinzel', serif;">Zone d'activation vidéo</span>
+</div>
+<button class="btn-action btn-secondary" style="position: absolute; bottom: 30px; width: auto; padding: 8px 20px;" onclick="closeNikonInteractive()">Annuler</button>
+</div>
+
+<!-- OVERLAY ANIMATION CLAP DE CINÉMA STANDARD -->
+<div id="clap-overlay" class="active clapping">
+<div class="clapperboard">
+<div class="clap-top"></div>
+<div class="clap-body">
+<h2>NATHANCINEMA</h2>
+<p style="color: #aaa; font-size: 0.8rem; margin-top: 5px;">ACTION !</p>
+</div>
+</div>
+</div>
+
+<!-- HEADER / NAVIGATION -->
+<header>
+<div class="logo">
+<i class="fa-solid fa-clapperboard"></i> NathanCinema
+</div>
+<nav>
+<button class="nav-btn active" onclick="switchTab('annonces', this)">Annonces & Castings</button>
+<button class="nav-btn" onclick="switchTab('soumettre', this)">Proposer une annonce</button>
+<button class="nav-btn" onclick="switchTab('apropos', this)">À Propos</button>
+</nav>
+
+<!-- BOUTON MODE DE LECTURE EN HAUT À DROITE -->
+<div class="view-mode-container">
+<button class="view-mode-btn" onclick="toggleViewMenu()">
+<i class="fa-solid fa-display"></i> Mode de lecture
+</button>
+<div class="view-mode-menu" id="viewModeMenu">
+<div class="view-mode-option" onclick="setViewMode('pc')">
+<i class="fa-solid fa-desktop"></i> PC
+</div>
+<div class="view-mode-option" onclick="setViewMode('tablette')">
+<i class="fa-solid fa-tablet-screen-button"></i> Tablette
+</div>
+<div class="view-mode-option" onclick="setViewMode('telephone')">
+<i class="fa-solid fa-mobile-screen-button"></i> Téléphone
+</div>
+</div>
+</div>
+</header>
+
+<!-- BANDE DÉFILANTE CINÉMA -->
+<div class="film-ticker-container">
+<div class="film-track">
+<div class="film-item"><i class="fa-solid fa-film"></i> PROJETS EN COURS</div>
+<div class="film-item"><i class="fa-solid fa-clapperboard"></i> CASTINGS OUVERTS</div>
+<div class="film-item"><i class="fa-solid fa-camera-retro"></i> NIKON FILM FESTIVAL 2026</div>
+<div class="film-item"><i class="fa-solid fa-user-ninja"></i> RECHERCHE RÔLES ET FIGURANTS</div>
+<div class="film-item"><i class="fa-solid fa-film"></i> PROJETS EN COURS</div>
+<div class="film-item"><i class="fa-solid fa-clapperboard"></i> CASTINGS OUVERTS</div>
+<div class="film-item"><i class="fa-solid fa-camera-retro"></i> NIKON FILM FESTIVAL 2026</div>
+<div class="film-item"><i class="fa-solid fa-user-ninja"></i> RECHERCHE RÔLES ET FIGURANTS</div>
+</div>
+</div>
+
+<!-- CONTENU PRINCIPAL -->
+<div class="container">
+
+<!-- ONGLET 1: ANNONCES & CASTINGS -->
+<section id="annonces" class="tab-content active">
+<h2 class="section-title"><i class="fa-solid fa-bullhorn"></i> Annonces Récentes</h2>
+
+<div class="cards-grid">
+<article class="card">
+<span class="card-badge">Demande de soutien & Castings</span>
+<h3>Court-Métrage — Nikon Festival 2026</h3>
+
+<div class="status-badge status-casting">
+<i class="fa-solid fa-spinner fa-spin"></i> Phase : Pré-production / Casting
+</div>
+
+<div class="card-meta" style="margin-top: 15px;">
+<span><i class="fa-regular fa-clock"></i> Max 2 minutes</span>
+<span><i class="fa-regular fa-calendar"></i> Sept / Oct 2026</span>
+</div>
+
+<p class="card-desc">
+Demande de soutien pour court-métrage de max 2 minutes pour le Festival Nikon. Le tournage se déroulera peut-être en septembre ou octobre 2026 (dates à revoir).<br><br>
+<strong>Recherche :</strong> Nous recherchons activement des <strong>rôles principaux / secondaires</strong> ainsi que des <strong>figurants</strong> pour le projet.
+</p>
+
+<!-- LECTEUR VIDÉO YOUTUBE INTEGRÉ DANS L'ARTICLE -->
+<p style="color: var(--gold-primary); font-weight: 700; margin-bottom: 8px; font-size: 0.9rem;">
+<i class="fa-solid fa-film"></i> Bande annonce officielle Nikon Festival 2026
+</p>
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/eGN_wC-ZJGA" title="Bande annonce officielle Nikon Festival 2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<div class="card-actions">
+<button class="btn-action" onclick="animateAndExecute(event, () => openApplyModal('Court-Métrage Nikon Festival 2026'))">Postuler (Rôles & Figuration)</button>
+<button class="btn-action btn-secondary" onclick="startNikonInteractiveExperience()"><i class="fa-solid fa-circle-play"></i> Lancer l'expérience Nikon (Attrape le Clap)</button>
+</div>
+</article>
+</div>
+
+<!-- SECTION NEWSLETTER NOUVELLE DESIGN 2026 -->
+<div class="newsletter-section">
+<h3 style="font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--gold-primary); margin-bottom: 10px;">
+<i class="fa-regular fa-envelope"></i> Restez au cœur de l'action
+</h3>
+<p style="color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 0.95rem;">
+Abonnez-vous à la newsletter pour recevoir en avant-première les nouveaux castings, appels à projets et actualités du cinéma indépendant.
+</p>
+<form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+<input type="email" id="newsletter-email" placeholder="Votre adresse e-mail..." required>
+<button type="submit" class="btn-action"><i class="fa-solid fa-paper-plane"></i> S'abonner</button>
+</form>
+</div>
+</section>
+
+<!-- ONGLET 2: PROPOSER UN PROJET -->
+<section id="soumettre" class="tab-content">
+<h2 class="section-title"><i class="fa-solid fa-paper-plane"></i> Proposer une annonce / demande</h2>
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+<form onsubmit="sendProposal(event)">
+<div class="form-group">
+<label>Type d'annonce</label>
+<select id="prop-type" required>
+<option value="">Sélectionner...</option>
+<option value="Casting Comédien(ne) / Figuration">Casting Comédien(ne) / Figuration</option>
+<option value="Recherche Équipe Technique">Recherche Équipe Technique</option>
+<option value="Demande de soutien / Financement">Demande de soutien / Financement</option>
+<option value="Matériel / Lieu de tournage">Matériel / Lieu de tournage</option>
+</select>
+</div>
+<div class="form-group">
+<label>Titre du projet</label>
+<input type="text" id="prop-titre" placeholder="Ex: Tournage Court-métrage" required>
+</div>
+<div class="form-group">
+<label>Description détaillée</label>
+<textarea id="prop-desc" rows="5" placeholder="Expliquez votre projet, les profils recherchés et les dates..." required></textarea>
+</div>
+<button type="submit" class="btn-action">Envoyer ma proposition</button>
+</form>
+</div>
+</section>
+
+<!-- ONGLET 3: À PROPOS -->
+<section id="apropos" class="tab-content">
+<h2 class="section-title"><i class="fa-solid fa-circle-info"></i> À Propos de NathanCinema</h2>
+<div class="card">
+<h3>La plateforme du cinéma indépendant</h3>
+<p class="card-desc" style="margin-top: 15px;">
+Bienvenue sur <strong>NathanCinema</strong>[span_0](start_span)[span_0](end_span). Ce site regroupe toutes les demandes de soutien, appels à projets et castings pour des tournages de courts-métrages, longs-métrages et festivals.
+</p>
+<p class="card-desc">
+Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong>[span_1](start_span)[span_1](end_span) ainsi que ses administrateurs[span_2](start_span)[span_2](end_span).
+</p>
+</div>
+</section>
+
+</div>
+
+<!-- MODALE CANDIDATURE -->
+<div id="apply-modal" class="modal">
+<div class="modal-content">
+<span class="close-modal" onclick="closeApplyModal()">×</span>
+<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 20px;">Formulaire de Postulation</h3>
+<p id="modal-project-title" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;"></p>
+
+<form onsubmit="sendCandidature(event)">
+<div class="form-group">
+<label>Nom</label>
+<input type="text" id="cand-nom" placeholder="Votre nom" required>
+</div>
+<div class="form-group">
+<label>Prénom</label>
+<input type="text" id="cand-prenom" placeholder="Votre prénom" required>
+</div>
+<div class="form-group">
+<label>Numéro de téléphone</label>
+<input type="tel" id="cand-tel" placeholder="06 12 34 56 78" required>
+</div>
+
+<div class="form-group">
+<label><i class="fa-solid fa-image"></i> Photo de profil / Headshot</label>
+<input type="file" id="cand-photo" accept="image/*">
+</div>
+<div class="form-group">
+<label><i class="fa-solid fa-film"></i> Vidéo / Bande-Démo / CV</label>
+<input type="file" id="cand-doc" accept="video/*,.pdf,.doc,.docx">
+</div>
+
+<button type="submit" class="btn-action">Envoyer ma candidature par Email</button>
+</form>
+</div>
+</div>
+
+<!-- MODALE TEASER VIDÉO YOUTUBE -->
+<div id="teaser-modal" class="modal">
+<div class="modal-content" style="text-align: center;">
+<span class="close-modal" onclick="closeTeaserModal()">×</span>
+<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 15px;">Bande Annonce Officielle Nikon Festival 2026</h3>
+
+<div class="video-container" style="margin-top: 15px;">
+<iframe src="https://www.youtube.com/embed/eGN_wC-ZJGA" title="Bande annonce officielle Nikon Festival 2026" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+<button class="btn-action" style="margin-top: 20px;" onclick="closeTeaserModal()">Fermer</button>
+</div>
+</div>
+
+<!-- MODALE REMERCIEMENT NEWSLETTER -->
+<div id="newsletter-thanks-modal" class="modal">
+<div class="modal-content" style="text-align: center; border: 2px solid var(--gold-primary); background: radial-gradient(circle, #1a1508 0%, #070709 100%);">
+<span class="close-modal" onclick="closeThanksModal()">×</span>
+<i class="fa-solid fa-crown" style="font-size: 3.5rem; color: var(--gold-primary); margin-bottom: 15px; filter: drop-shadow(0 0 20px var(--gold-primary));"></i>
+<h2 style="font-family: 'Cinzel', serif; color: var(--gold-primary); font-size: 2rem; margin-bottom: 10px;">INSCRIPTION CONFIRMÉE !</h2>
+<p id="thanks-email-txt" style="color: #fff; font-size: 1.1rem; margin-bottom: 15px; font-weight: 600;"></p>
+<p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez toutes nos nouveautés, castings exclusifs et actualités directement !
+</p>
+<button class="btn-action" onclick="closeThanksModal()">EXCELLENT !</button>
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+<p>© 2026 <strong>NathanCinema</strong> — Tous droits réservés.</p>
+<p style="margin-top: 8px; font-size: 0.8rem;">Site web géré par <strong>Nathan CARER</strong> et des administrateurs.</p>
+</footer>
+
+<!-- JAVASCRIPT ANIMATIONS & LOGIQUE -->
+<script>
+let currentProjectName = "";
+
+// GESTION DU MODE DE LECTURE
+function toggleViewMenu() {
+const menu = document.getElementById('viewModeMenu');
+menu.classList.toggle('show');
+}
+
+function setViewMode(mode) {
+document.body.classList.remove('mode-pc', 'mode-tablette', 'mode-telephone');
+document.body.classList.add('mode-' + mode);
+document.getElementById('viewModeMenu').classList.remove('show');
+}
+
+// Ferme le menu si l'utilisateur clique en dehors
+window.addEventListener('click', function(e) {
+if (!e.target.closest('.view-mode-container')) {
+const menu = document.getElementById('viewModeMenu');
+if (menu) menu.classList.remove('show');
+}
+});
+
+// EFFET SONORE (Son de Clap via Web Audio API)
+function playClapSound() {
+try {
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const bufferSize = audioCtx.sampleRate * 0.05;
+const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+const data = buffer.getChannelData(0);
+for (let i = 0; i < bufferSize; i++) {
+data[i] = Math.random() * 2 - 1;
+}
+
+const noise = audioCtx.createBufferSource();
+noise.buffer = buffer;
+
+const filter = audioCtx.createBiquadFilter();
+filter.type = 'lowpass';
+filter.frequency.value = 1200;
+
+const gain = audioCtx.createGain();
+gain.gain.setValueAtTime(1, audioCtx.currentTime);
+gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+noise.connect(filter);
+filter.connect(gain);
+gain.connect(audioCtx.destination);
+
+noise.start();
+} catch(e) {
+// Fallback silencieux
+}
+}
+
+// MUSIQUE & EFFET SONORE ÉPIQUE DE FEUX D'ARTIFICE ET CELEBRATION
+function playCelebrationMusic() {
+try {
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const now = audioCtx.currentTime;
+
+// Synthétiseur d'accord épique (Arpège Royal)
+const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+notes.forEach((freq, idx) => {
+const osc = audioCtx.createOscillator();
+const gain = audioCtx.createGain();
+osc.type = idx % 2 === 0 ? 'triangle' : 'sine';
+osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+gain.gain.setValueAtTime(0, now + idx * 0.08);
+gain.gain.linearRampToValueAtTime(0.2, now + idx * 0.08 + 0.05);
+gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 1.5);
+
+osc.connect(gain);
+gain.connect(audioCtx.destination);
+osc.start(now + idx * 0.08);
+osc.stop(now + idx * 0.08 + 1.5);
+});
+
+// Explosions de feux d'artifice (Bruit blanc filtré descendant)
+for(let i = 0; i < 4; i++) {
+const delay = i * 0.25;
+const bufferSize = audioCtx.sampleRate * 0.4;
+const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+const data = buffer.getChannelData(0);
+for (let j = 0; j < bufferSize; j++) {
+data[j] = Math.random() * 2 - 1;
+}
+
+const noise = audioCtx.createBufferSource();
+noise.buffer = buffer;
+
+const filter = audioCtx.createBiquadFilter();
+filter.type = 'lowpass';
+filter.frequency.setValueAtTime(3000, now + delay);
+filter.frequency.exponentialRampToValueAtTime(100, now + delay + 0.4);
+
+const gain = audioCtx.createGain();
+gain.gain.setValueAtTime(0.4, now + delay);
+gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.4);
+
+noise.connect(filter);
+filter.connect(gain);
+gain.connect(audioCtx.destination);
+
+noise.start(now + delay);
+noise.stop(now + delay + 0.4);
+}
+} catch(e) {}
+}
+
+// ANIMATION BOUTON VOLANT -> TRANSFORMÉ EN CLAP
+function animateAndExecute(e, actionCallback) {
+const btn = e.currentTarget;
+const rect = btn.getBoundingClientRect();
+
+for(let i = 0; i < 12; i++) {
+const sparkle = document.createElement('div');
+sparkle.className = 'sparkle';
+sparkle.style.left = e.clientX + 'px';
+sparkle.style.top = e.clientY + 'px';
+const angle = Math.random() * Math.PI * 2;
+const dist = 40 + Math.random() * 60;
+sparkle.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+sparkle.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+document.body.appendChild(sparkle);
+setTimeout(() => sparkle.remove(), 600);
+}
+
+const flyingClap = document.createElement('div');
+flyingClap.className = 'flying-clap';
+flyingClap.innerHTML = '<i class="fa-solid fa-clapperboard"></i> ACTION !';
+flyingClap.style.left = rect.left + 'px';
+flyingClap.style.top = rect.top + 'px';
+flyingClap.style.width = rect.width + 'px';
+flyingClap.style.height = rect.height + 'px';
+flyingClap.style.setProperty('--startX', `${rect.left}px`);
+flyingClap.style.setProperty('--startY', `${rect.top}px`);
+
+document.body.appendChild(flyingClap);
+playClapSound();
+
+setTimeout(() => {
+playClapSound();
+}, 600);
+
+setTimeout(() => {
+flyingClap.remove();
+if (actionCallback) actionCallback();
+}, 1100);
+}
+
+// --- EXPÉRIENCE INTERACTIVE NIKON FESTIVAL (PLUIE DE CLAPS & DRAG-AND-DROP) ---
+let activeFallingClaps = [];
+
+function startNikonInteractiveExperience() {
+const overlay = document.getElementById('nikon-interactive-overlay');
+overlay.classList.add('active');
+
+// Générer des dizaines de claps qui tombent du ciel
+for (let i = 0; i < 40; i++) {
+setTimeout(() => {
+if (!overlay.classList.contains('active')) return;
+createFallingClap();
+}, i * 150);
+}
+
+// Gestion du Drag Over la cible
+const target = document.getElementById('target-zone');
+target.addEventListener('dragover', (e) => {
+e.preventDefault();
+target.classList.add('hovered');
+});
+target.addEventListener('dragleave', () => {
+target.classList.remove('hovered');
+});
+target.addEventListener('drop', (e) => {
+e.preventDefault();
+target.classList.remove('hovered');
+closeNikonInteractive();
+openTeaserModal();
+});
+}
+
+function createFallingClap() {
+const clap = document.createElement('i');
+clap.className = 'fa-solid fa-clapperboard falling-clap';
+clap.draggable = true;
+
+const startX = Math.random() * (window.innerWidth - 60);
+const duration = 3 + Math.random() * 4;
+
+clap.style.left = startX + 'px';
+clap.style.top = '-60px';
+clap.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out`;
+
+// Événements de Drag & Touch
+clap.addEventListener('dragstart', (e) => {
+e.dataTransfer.setData('text/plain', 'clap');
+playClapSound();
+});
+
+// Clic direct d'urgence au cas où
+clap.addEventListener('click', () => {
+closeNikonInteractive();
+openTeaserModal();
+});
+
+document.body.appendChild(clap);
+activeFallingClaps.push(clap);
+
+requestAnimationFrame(() => {
+clap.style.top = (window.innerHeight + 80) + 'px';
+clap.style.transform = `rotate(${Math.random() * 720 - 360}deg)`;
+});
+
+setTimeout(() => {
+clap.remove();
+}, duration * 1000);
+}
+
+function closeNikonInteractive() {
+const overlay = document.getElementById('nikon-interactive-overlay');
+overlay.classList.remove('active');
+activeFallingClaps.forEach(clap => clap.remove());
+activeFallingClaps = [];
+}
+
+// Animation globale du Clap de cinéma
+function triggerClap(callback) {
+const overlay = document.getElementById('clap-overlay');
+overlay.classList.add('active');
+overlay.classList.add('clapping');
+
+playClapSound();
+
+setTimeout(() => {
+overlay.classList.remove('clapping');
+}, 250);
+
+setTimeout(() => {
+if (callback) callback();
+overlay.classList.remove('active');
+}, 600);
+}
+
+// Chargement initial
+window.addEventListener('load', () => {
+setTimeout(() => {
+playClapSound();
+document.getElementById('clap-overlay').classList.remove('clapping');
+setTimeout(() => {
+document.getElementById('clap-overlay').classList.remove('active');
+}, 300);
+}, 300);
+});
+
+// Changement d'onglet
+function switchTab(tabId, btnElement) {
+triggerClap(() => {
+document.querySelectorAll('.tab-content').forEach(tab => {
+tab.classList.remove('active');
+});
+document.querySelectorAll('.nav-btn').forEach(btn => {
+btn.classList.remove('active');
+});
+
+document.getElementById(tabId).classList.add('active');
+btnElement.classList.add('active');
+});
+}
+
+// Modale Candidature
+function openApplyModal(projetName) {
+currentProjectName = projetName;
+document.getElementById('modal-project-title').innerText = "Projet : " + projetName;
+document.getElementById('apply-modal').classList.add('active');
+}
+
+function closeApplyModal() {
+document.getElementById('apply-modal').classList.remove('active');
+}
+
+// Modale Teaser
+function openTeaserModal() {
+document.getElementById('teaser-modal').classList.add('active');
+}
+
+function closeTeaserModal() {
+document.getElementById('teaser-modal').classList.remove('active');
+}
+
+function closeThanksModal() {
+document.getElementById('newsletter-thanks-modal').classList.remove('active');
+}
+
+// Envoi proposition de projet
+function sendProposal(e) {
+e.preventDefault();
+const type = document.getElementById('prop-type').value;
+const titre = document.getElementById('prop-titre').value;
+const desc = document.getElementById('prop-desc').value;
+
+const emailDest = "nathan.carer.pro@gmail.com";
+const sujet = encodeURIComponent("Nouvelle Proposition : " + titre);
+const corps = encodeURIComponent("Bonjour Nathan,\n\nVoici une nouvelle proposition de projet :\n\n- Type : " + type + "\n- Titre : " + titre + "\n\nDescription :\n" + desc + "\n\nCordialement,");
+
+window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
+}
+
+// FONCTION UTILITAIRE : CONVERTIR UN FICHIER EN DATA URL (POUR INJECTION DANS LE MAIL)
+function readFileAsDataURL(file) {
+return new Promise((resolve) => {
+if (!file) {
+resolve(null);
+return;
+}
+const reader = new FileReader();
+reader.onload = (e) => resolve({ name: file.name, url: e.target.result });
+reader.onerror = () => resolve(null);
+reader.readAsDataURL(file);
+});
+}
+
+// ENVOI DE LA CANDIDATURE AVEC FICHIERS CHARGÉS DIRECTEMENT DANS LE MAIL
+async function sendCandidature(e) {
+e.preventDefault();
+const nom = document.getElementById('cand-nom').value;
+const prenom = document.getElementById('cand-prenom').value;
+const tel = document.getElementById('cand-tel').value;
+const photoInput = document.getElementById('cand-photo');
+const docInput = document.getElementById('cand-doc');
+
+let photoFile = photoInput.files[0] ? await readFileAsDataURL(photoInput.files[0]) : null;
+let docFile = docInput.files[0] ? await readFileAsDataURL(docInput.files[0]) : null;
+
+let attachmentsText = "";
+
+if (photoFile) {
+attachmentsText += "\n\n--- PHOTO DE PROFIL (Fichier chargé) ---\n";
+attachmentsText += "Nom du fichier : " + photoFile.name + "\n";
+attachmentsText += "Lien / Contenu brut (Data URL) : " + photoFile.url;
+}
+
+if (docFile) {
+attachmentsText += "\n\n--- VIDÉO / DOCUMENT (Fichier chargé) ---\n";
+attachmentsText += "Nom du fichier : " + docFile.name + "\n";
+attachmentsText += "Lien / Contenu brut (Data URL) : " + docFile.url;
+}
+
+const emailDest = "nathan.carer.pro@gmail.com";
+const sujet = encodeURIComponent("Candidature - " + currentProjectName);
+const corps = encodeURIComponent(
+"Bonjour Nathan,\n\nJe souhaite postuler au projet : " + currentProjectName + "\n\n" +
+"- Nom : " + nom + "\n" +
+"- Prénom : " + prenom + "\n" +
+"- Téléphone : " + tel +
+attachmentsText + "\n\nCordialement,"
+);
+
+window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
+}
+
+// SOUSCRIPTION NEWSLETTER SANS ENVOI DE MAIL + ANIMATION ÉCLAT DE FEUX D'ARTIFICE, SHAKE SITE & MUSIQUE
+function subscribeNewsletter(e) {
+e.preventDefault();
+const email = document.getElementById('newsletter-email').value;
+
+// 1. Déclencher le tremblement du site
+document.body.classList.add('shake-active');
+setTimeout(() => {
+document.body.classList.remove('shake-active');
+}, 800);
+
+// 2. Jouer la musique et les effets sonores
+playCelebrationMusic();
+
+// 3. Générer les feux d'artifice (Particules colorées)
+const colors = ['#f3c649', '#ff3366', '#33ccff', '#ff9900', '#00ffcc', '#ffffff'];
+for (let f = 0; f < 80; f++) {
+const particle = document.createElement('div');
+particle.className = 'firework-particle';
+const startX = window.innerWidth / 2;
+const startY = window.innerHeight / 2;
+particle.style.left = startX + 'px';
+particle.style.top = startY + 'px';
+particle.style.width = (6 + Math.random() * 8) + 'px';
+particle.style.height = particle.style.width;
+const color = colors[Math.floor(Math.random() * colors.length)];
+particle.style.background = color;
+particle.style.boxShadow = `0 0 15px ${color}`;
+
+const angle = Math.random() * Math.PI * 2;
+const dist = 100 + Math.random() * 300;
+particle.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+particle.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+
+document.body.appendChild(particle);
+setTimeout(() => particle.remove(), 800);
+}
+
+// 4. Afficher le message de remerciement qui surgit
+document.getElementById('thanks-email-txt').innerText = email;
+setTimeout(() => {
+document.getElementById('newsletter-thanks-modal').classList.add('active');
+}, 200);
+
+document.getElementById('newsletter-email').value = "";
+}
+</script>
 </body>
 </html>
