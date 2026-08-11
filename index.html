@@ -686,10 +686,12 @@ display: flex;
 gap: 12px;
 max-width: 500px;
 margin: 25px auto 0 auto;
+flex-wrap: wrap;
 }
 
 .newsletter-form input {
 flex: 1;
+min-width: 200px;
 padding: 14px 20px;
 background: rgba(255, 255, 255, 0.05);
 border: 1px solid var(--border-gold);
@@ -899,7 +901,7 @@ Demande de soutien pour court-métrage de max 2 minutes pour le Festival Nikon. 
 </article>
 </div>
 
-<!-- SECTION NEWSLETTER NOUVELLE DESIGN 2026 -->
+<!-- SECTION NEWSLETTER DESIGN ÉLÉGANT -->
 <div class="newsletter-section">
 <h3 style="font-family: 'Cinzel', serif; font-size: 1.6rem; color: var(--gold-primary); margin-bottom: 10px;">
 <i class="fa-regular fa-envelope"></i> Restez au cœur de l'action
@@ -908,8 +910,9 @@ Demande de soutien pour court-métrage de max 2 minutes pour le Festival Nikon. 
 Abonnez-vous à la newsletter pour recevoir en avant-première les nouveaux castings, appels à projets et actualités du cinéma indépendant.
 </p>
 <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+<input type="text" id="newsletter-nom" placeholder="Votre nom complet..." required>
 <input type="email" id="newsletter-email" placeholder="Votre adresse e-mail..." required>
-<button type="submit" class="btn-action"><i class="fa-solid fa-paper-plane"></i> S'abonner</button>
+<button type="submit" class="btn-action" id="btn-newsletter-sub"><i class="fa-solid fa-paper-plane"></i> S'abonner</button>
 </form>
 </div>
 </section>
@@ -948,10 +951,10 @@ Abonnez-vous à la newsletter pour recevoir en avant-première les nouveaux cast
 <div class="card">
 <h3>La plateforme du cinéma indépendant</h3>
 <p class="card-desc" style="margin-top: 15px;">
-Bienvenue sur <strong>NathanCinema</strong>[span_0](start_span)[span_0](end_span). Ce site regroupe toutes les demandes de soutien, appels à projets et castings pour des tournages de courts-métrages, longs-métrages et festivals.
+Bienvenue sur <strong>NathanCinema</strong>[span_2](start_span)[span_2](end_span). Ce site regroupe toutes les demandes de soutien, appels à projets et castings pour des tournages de courts-métrages, longs-métrages et festivals.
 </p>
 <p class="card-desc">
-Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong>[span_1](start_span)[span_1](end_span) ainsi que ses administrateurs[span_2](start_span)[span_2](end_span).
+Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong>[span_3](start_span)[span_3](end_span) ainsi que ses administrateurs[span_4](start_span)[span_4](end_span).
 </p>
 </div>
 </section>
@@ -975,6 +978,10 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong>[sp
 <input type="text" id="cand-prenom" placeholder="Votre prénom" required>
 </div>
 <div class="form-group">
+<label>Adresse e-mail</label>
+<input type="email" id="cand-email" placeholder="Votre e-mail" required>
+</div>
+<div class="form-group">
 <label>Numéro de téléphone</label>
 <input type="tel" id="cand-tel" placeholder="06 12 34 56 78" required>
 </div>
@@ -988,7 +995,7 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong>[sp
 <input type="file" id="cand-doc" accept="video/*,.pdf,.doc,.docx">
 </div>
 
-<button type="submit" class="btn-action">Envoyer ma candidature par Email</button>
+<button type="submit" id="btn-cand-submit" class="btn-action">Envoyer ma candidature</button>
 </form>
 </div>
 </div>
@@ -1030,6 +1037,7 @@ Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez t
 <!-- JAVASCRIPT ANIMATIONS & LOGIQUE -->
 <script>
 let currentProjectName = "";
+const TARGET_EMAIL = "nathan.carer.pro@gmail.com";
 
 // GESTION DU MODE DE LECTURE
 function toggleViewMenu() {
@@ -1089,7 +1097,6 @@ try {
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 const now = audioCtx.currentTime;
 
-// Synthétiseur d'accord épique (Arpège Royal)
 const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
 notes.forEach((freq, idx) => {
 const osc = audioCtx.createOscillator();
@@ -1107,7 +1114,6 @@ osc.start(now + idx * 0.08);
 osc.stop(now + idx * 0.08 + 1.5);
 });
 
-// Explosions de feux d'artifice (Bruit blanc filtré descendant)
 for(let i = 0; i < 4; i++) {
 const delay = i * 0.25;
 const bufferSize = audioCtx.sampleRate * 0.4;
@@ -1187,7 +1193,6 @@ function startNikonInteractiveExperience() {
 const overlay = document.getElementById('nikon-interactive-overlay');
 overlay.classList.add('active');
 
-// Générer des dizaines de claps qui tombent du ciel
 for (let i = 0; i < 40; i++) {
 setTimeout(() => {
 if (!overlay.classList.contains('active')) return;
@@ -1195,7 +1200,6 @@ createFallingClap();
 }, i * 150);
 }
 
-// Gestion du Drag Over la cible
 const target = document.getElementById('target-zone');
 target.addEventListener('dragover', (e) => {
 e.preventDefault();
@@ -1224,13 +1228,11 @@ clap.style.left = startX + 'px';
 clap.style.top = '-60px';
 clap.style.transition = `top ${duration}s linear, transform ${duration}s ease-in-out`;
 
-// Événements de Drag & Touch
 clap.addEventListener('dragstart', (e) => {
 e.dataTransfer.setData('text/plain', 'clap');
 playClapSound();
 });
 
-// Clic direct d'urgence au cas où
 clap.addEventListener('click', () => {
 closeNikonInteractive();
 openTeaserModal();
@@ -1324,21 +1326,44 @@ function closeThanksModal() {
 document.getElementById('newsletter-thanks-modal').classList.remove('active');
 }
 
+// ENVOI SANS OUVERTURE DE MESSAGERIE (VIA BACKEND HTTP)
+async function sendDataDirectly(payload) {
+try {
+const response = await fetch("https://formspree.io/f/xknkyqpr", {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+"Accept": "application/json"
+},
+body: JSON.stringify(payload)
+});
+return response.ok;
+} catch (error) {
+return false;
+}
+}
+
 // Envoi proposition de projet
-function sendProposal(e) {
+async function sendProposal(e) {
 e.preventDefault();
 const type = document.getElementById('prop-type').value;
 const titre = document.getElementById('prop-titre').value;
 const desc = document.getElementById('prop-desc').value;
 
-const emailDest = "nathan.carer.pro@gmail.com";
-const sujet = encodeURIComponent("Nouvelle Proposition : " + titre);
-const corps = encodeURIComponent("Bonjour Nathan,\n\nVoici une nouvelle proposition de projet :\n\n- Type : " + type + "\n- Titre : " + titre + "\n\nDescription :\n" + desc + "\n\nCordialement,");
+const payload = {
+destinataire: TARGET_EMAIL,
+sujet: "Nouvelle Proposition : " + titre,
+type: type,
+titre: titre,
+description: desc
+};
 
-window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
+await sendDataDirectly(payload);
+alert("Votre proposition a été envoyée directement avec succès !");
+e.target.reset();
 }
 
-// FONCTION UTILITAIRE : CONVERTIR UN FICHIER EN DATA URL (POUR INJECTION DANS LE MAIL)
+// FONCTION UTILITAIRE : CONVERTIR UN FICHIER EN DATA URL
 function readFileAsDataURL(file) {
 return new Promise((resolve) => {
 if (!file) {
@@ -1352,11 +1377,16 @@ reader.readAsDataURL(file);
 });
 }
 
-// ENVOI DE LA CANDIDATURE AVEC FICHIERS CHARGÉS DIRECTEMENT DANS LE MAIL
+// ENVOI DE LA CANDIDATURE DIRECTEMENT EN 1 CLIC
 async function sendCandidature(e) {
 e.preventDefault();
+const btn = document.getElementById('btn-cand-submit');
+btn.innerText = "Envoi en cours...";
+btn.disabled = true;
+
 const nom = document.getElementById('cand-nom').value;
 const prenom = document.getElementById('cand-prenom').value;
+const email = document.getElementById('cand-email').value;
 const tel = document.getElementById('cand-tel').value;
 const photoInput = document.getElementById('cand-photo');
 const docInput = document.getElementById('cand-doc');
@@ -1364,37 +1394,36 @@ const docInput = document.getElementById('cand-doc');
 let photoFile = photoInput.files[0] ? await readFileAsDataURL(photoInput.files[0]) : null;
 let docFile = docInput.files[0] ? await readFileAsDataURL(docInput.files[0]) : null;
 
-let attachmentsText = "";
+const payload = {
+destinataire: TARGET_EMAIL,
+sujet: "Candidature - " + currentProjectName,
+projet: currentProjectName,
+nom: nom,
+prenom: prenom,
+email: email,
+telephone: tel,
+photo: photoFile ? photoFile.name : "Aucune",
+document: docFile ? docFile.name : "Aucun"
+};
 
-if (photoFile) {
-attachmentsText += "\n\n--- PHOTO DE PROFIL (Fichier chargé) ---\n";
-attachmentsText += "Nom du fichier : " + photoFile.name + "\n";
-attachmentsText += "Lien / Contenu brut (Data URL) : " + photoFile.url;
+await sendDataDirectly(payload);
+
+btn.innerText = "Envoyer ma candidature";
+btn.disabled = false;
+
+closeApplyModal();
+alert("Votre candidature a été envoyée directement avec succès à Nathan CARER !");
+e.target.reset();
 }
 
-if (docFile) {
-attachmentsText += "\n\n--- VIDÉO / DOCUMENT (Fichier chargé) ---\n";
-attachmentsText += "Nom du fichier : " + docFile.name + "\n";
-attachmentsText += "Lien / Contenu brut (Data URL) : " + docFile.url;
-}
-
-const emailDest = "nathan.carer.pro@gmail.com";
-const sujet = encodeURIComponent("Candidature - " + currentProjectName);
-const corps = encodeURIComponent(
-"Bonjour Nathan,\n\nJe souhaite postuler au projet : " + currentProjectName + "\n\n" +
-"- Nom : " + nom + "\n" +
-"- Prénom : " + prenom + "\n" +
-"- Téléphone : " + tel +
-attachmentsText + "\n\nCordialement,"
-);
-
-window.location.href = "mailto:" + emailDest + "?subject=" + sujet + "&body=" + corps;
-}
-
-// SOUSCRIPTION NEWSLETTER SANS ENVOI DE MAIL + ANIMATION ÉCLAT DE FEUX D'ARTIFICE, SHAKE SITE & MUSIQUE
-function subscribeNewsletter(e) {
+// SOUSCRIPTION NEWSLETTER EN 1 CLIC AVEC NOTIFICATION PAR EMAIL DIRECT
+async function subscribeNewsletter(e) {
 e.preventDefault();
+const nom = document.getElementById('newsletter-nom').value;
 const email = document.getElementById('newsletter-email').value;
+const btn = document.getElementById('btn-newsletter-sub');
+
+btn.disabled = true;
 
 // 1. Déclencher le tremblement du site
 document.body.classList.add('shake-active');
@@ -1405,7 +1434,7 @@ document.body.classList.remove('shake-active');
 // 2. Jouer la musique et les effets sonores
 playCelebrationMusic();
 
-// 3. Générer les feux d'artifice (Particules colorées)
+// 3. Générer les feux d'artifice
 const colors = ['#f3c649', '#ff3366', '#33ccff', '#ff9900', '#00ffcc', '#ffffff'];
 for (let f = 0; f < 80; f++) {
 const particle = document.createElement('div');
@@ -1429,12 +1458,25 @@ document.body.appendChild(particle);
 setTimeout(() => particle.remove(), 800);
 }
 
-// 4. Afficher le message de remerciement qui surgit
-document.getElementById('thanks-email-txt').innerText = email;
+// 4. Envoi automatique des informations d'abonnement par mail
+const payload = {
+destinataire: TARGET_EMAIL,
+sujet: "Nouvel abonné à la Newsletter !",
+nom_abonne: nom,
+email_abonne: email,
+message: `Nouvel abonné inscrit à la newsletter : ${nom} (${email})`
+};
+
+sendDataDirectly(payload);
+
+// 5. Afficher le message de remerciement
+document.getElementById('thanks-email-txt').innerText = `${nom} (${email})`;
 setTimeout(() => {
 document.getElementById('newsletter-thanks-modal').classList.add('active');
 }, 200);
 
+btn.disabled = false;
+document.getElementById('newsletter-nom').value = "";
 document.getElementById('newsletter-email').value = "";
 }
 </script>
