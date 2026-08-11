@@ -37,6 +37,90 @@
             color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
+            transition: max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
+        }
+
+        /* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
+        body.mode-pc {
+            max-width: 100% !important;
+            margin: 0 auto !important;
+            border: none !important;
+        }
+
+        body.mode-tablette {
+            max-width: 768px !important;
+            margin: 20px auto !important;
+            border: 2px solid var(--border-gold) !important;
+            border-radius: 20px !important;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+        }
+
+        body.mode-telephone {
+            max-width: 385px !important;
+            margin: 20px auto !important;
+            border: 2px solid var(--border-gold) !important;
+            border-radius: 30px !important;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8) !important;
+        }
+
+        .view-mode-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .view-mode-btn {
+            background: rgba(243, 198, 73, 0.1);
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .view-mode-btn:hover {
+            background: var(--gold-gradient);
+            color: #000;
+        }
+
+        .view-mode-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background: rgba(18, 18, 24, 0.95);
+            border: 1px solid var(--border-gold);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 1001;
+            min-width: 150px;
+        }
+
+        .view-mode-menu.show {
+            display: block;
+        }
+
+        .view-mode-option {
+            padding: 10px 15px;
+            color: var(--text-main);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .view-mode-option:hover {
+            background: rgba(243, 198, 73, 0.2);
+            color: var(--gold-primary);
         }
 
         /* --- OVERLAY ANIMATION CLAP DE CINÉMA --- */
@@ -676,7 +760,7 @@
         }
     </style>
 </head>
-<body>
+<body class="mode-pc">
 
     <!-- OVERLAY ANIMATION INTERACTIVE NIKON FESTIVAL (PLUIE DE CLAPS & CIBLE) -->
     <div id="nikon-interactive-overlay">
@@ -709,6 +793,24 @@
             <button class="nav-btn" onclick="switchTab('soumettre', this)">Proposer une annonce</button>
             <button class="nav-btn" onclick="switchTab('apropos', this)">À Propos</button>
         </nav>
+        
+        <!-- BOUTON MODE DE LECTURE EN HAUT À DROITE -->
+        <div class="view-mode-container">
+            <button class="view-mode-btn" onclick="toggleViewMenu()">
+                <i class="fa-solid fa-display"></i> Mode de lecture
+            </button>
+            <div class="view-mode-menu" id="viewModeMenu">
+                <div class="view-mode-option" onclick="setViewMode('pc')">
+                    <i class="fa-solid fa-desktop"></i> PC
+                </div>
+                <div class="view-mode-option" onclick="setViewMode('tablette')">
+                    <i class="fa-solid fa-tablet-screen-button"></i> Tablette
+                </div>
+                <div class="view-mode-option" onclick="setViewMode('telephone')">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Téléphone
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- BANDE DÉFILANTE CINÉMA -->
@@ -883,6 +985,26 @@
     <!-- JAVASCRIPT ANIMATIONS & LOGIQUE -->
     <script>
         let currentProjectName = "";
+
+        // GESTION DU MODE DE LECTURE
+        function toggleViewMenu() {
+            const menu = document.getElementById('viewModeMenu');
+            menu.classList.toggle('show');
+        }
+
+        function setViewMode(mode) {
+            document.body.classList.remove('mode-pc', 'mode-tablette', 'mode-telephone');
+            document.body.classList.add('mode-' + mode);
+            document.getElementById('viewModeMenu').classList.remove('show');
+        }
+
+        // Ferme le menu si l'utilisateur clique en dehors
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.view-mode-container')) {
+                const menu = document.getElementById('viewModeMenu');
+                if (menu) menu.classList.remove('show');
+            }
+        });
 
         // EFFET SONORE (Son de Clap via Web Audio API)
         function playClapSound() {
