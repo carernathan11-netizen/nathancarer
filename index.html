@@ -59,7 +59,7 @@ transition: width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radiu
 animation: shakeSite 0.8s ease-in-out;
 }
 
-/* TREMBLEMENT APOCALYPTIQUE NATHAN CARER */
+/* TREMBLEMENT APOCALYPTIQUE BOSS NATHAN CARER */
 @keyframes bossNuclearShake {
 0% { transform: translate(0, 0) scale(1) rotate(0deg); filter: hue-rotate(0deg); }
 10% { transform: translate(-25px, -20px) scale(1.02) rotate(-2deg); filter: hue-rotate(90deg) contrast(1.5); }
@@ -86,7 +86,7 @@ opacity: 0 !important;
 pointer-events: none !important;
 }
 
-/* --- ANIMATIONS SPÉCIFIQUES LOUISE & ENORA --- */
+/* --- ANIMATIONS SPÉCIFIQUES LOUISE, ENORA & RIWAN --- */
 @keyframes louiseExplodeReconstruct {
 0% { transform: scale(1) rotate(0deg); opacity: 1; filter: none; }
 25% { transform: scale(1.3) rotate(-15deg); filter: drop-shadow(0 0 40px #ff3300) contrast(2); }
@@ -107,6 +107,17 @@ animation: louiseExplodeReconstruct 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)
 
 .enora-anim-active {
 animation: enoraGlowGleam 1.5s ease-in-out infinite alternate !important;
+}
+
+/* ANIMATION FLAMMES POUR RIWAN */
+@keyframes riwanFireGlow {
+0% { box-shadow: 0 0 15px #ff4500, inset 0 0 10px #ff8c00; transform: scale(1); }
+50% { box-shadow: 0 0 50px #ff0000, 0 0 80px #ff8c00, inset 0 0 25px #ffff00; transform: scale(1.08) rotate(2deg); border-color: #ff4500; }
+100% { box-shadow: 0 0 20px #ff4500, inset 0 0 10px #ff8c00; transform: scale(1); }
+}
+
+.riwan-anim-active {
+animation: riwanFireGlow 0.4s ease-in-out 3 alternate !important;
 }
 
 /* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
@@ -371,8 +382,8 @@ opacity: 0;
 }
 }
 
-/* PARTICULES DE CLIC ET FEUX D'ARTIFICE */
-.sparkle, .firework-particle {
+/* PARTICULES DE CLIC ET FEUX D'ARTIFICE / FLAMMES */
+.sparkle, .firework-particle, .flame-particle {
 position: fixed;
 border-radius: 50%;
 pointer-events: none;
@@ -387,9 +398,23 @@ background: var(--gold-primary);
 box-shadow: 0 0 10px var(--gold-primary);
 }
 
+.flame-particle {
+width: 12px;
+height: 12px;
+background: #ff4500;
+box-shadow: 0 0 15px #ff0000, 0 0 25px #ff8c00;
+animation: explodeFlame 0.9s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
 @keyframes explodeSparkle {
 0% { transform: translate(0, 0) scale(1); opacity: 1; }
 100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+}
+
+@keyframes explodeFlame {
+0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+50% { background: #ff8c00; }
+100% { transform: translate(var(--dx), var(--dy)) scale(0.2) rotate(180deg); opacity: 0; }
 }
 
 /* --- HEADER & NAVIGATION --- */
@@ -831,7 +856,7 @@ z-index: 10;
 color: var(--gold-primary);
 }
 
-/* --- DESIGN GALERIE DE VIGNETTES 2026 --- */
+/* --- DESIGN GALERIE DE VIGNETTES PANINI 2026 --- */
 .team-hero-banner {
 background: linear-gradient(135deg, rgba(243, 198, 73, 0.15), rgba(10, 10, 14, 0.95));
 border: 2px solid var(--gold-primary);
@@ -861,7 +886,7 @@ animation: shineGlow 4s infinite;
 100% { transform: translateX(100%) rotate(30deg); }
 }
 
-/* Galerie compacte de vignettes style collector 2026 */
+/* Galerie compacte de vignettes style Panini 2026 */
 .vignettes-grid {
 display: grid;
 grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -890,7 +915,7 @@ justify-content: space-between;
 min-height: 220px;
 }
 
-/* Motif holographique style carte collector */
+/* Motif holographique style carte collector Panini */
 .vignette-card::before {
 content: '';
 position: absolute;
@@ -949,7 +974,7 @@ font-size: 1rem;
 text-shadow: 0 0 8px rgba(0,0,0,0.9);
 }
 
-/* Badge Numéro / Collection */
+/* Badge Numéro / Collection Panini */
 .panini-badge {
 position: absolute;
 top: 8px;
@@ -1019,7 +1044,7 @@ transition: all 0.3s ease;
 width: 100%;
 }
 
-/* CARTE GRANDE TAILLE DANS LA MODALE */
+/* CARTE GRANDE TAILLE DANS LA MODALE (Cliquer dessus = Taille Normale Panini) */
 .panini-large-card {
 background: linear-gradient(135deg, #101018 0%, #08080c 100%);
 border: 3px solid var(--gold-primary);
@@ -1062,7 +1087,7 @@ border: 4px solid #ffffff;
 box-shadow: 0 0 30px var(--gold-primary);
 }
 
-/* OVERLAY LÉGENDAIRE DÉBLOCAGE CARTE LÉGENDAIRE */
+/* OVERLAY LÉGENDAIRE DÉBLOCAGE BOSS FINAL */
 #boss-unlocked-overlay {
 position: fixed;
 top: 0;
@@ -1186,12 +1211,12 @@ width: 100%;
 </head>
 <body class="mode-pc">
 
-<!-- OVERLAY NATHAN CARER DÉBLOQUÉ -->
+<!-- OVERLAY BOSS FINAL NATHAN CARER DÉBLOQUÉ -->
 <div id="boss-unlocked-overlay">
 <div class="boss-card-popup">
 <i class="fa-solid fa-crown" style="font-size: 5rem; color: var(--gold-primary); filter: drop-shadow(0 0 30px var(--gold-primary)); margin-bottom: 15px;"></i>
 <h1 style="font-family: 'Cinzel', serif; color: #fff; font-size: 2.2rem; text-shadow: 0 0 20px var(--gold-primary);">NATHAN CARER</h1>
-<p style="color: var(--gold-primary); font-weight: 800; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 15px;">LA CARTE LÉGENDAIRE A ÉTÉ DÉBLOQUÉE !</p>
+<p style="color: var(--gold-primary); font-weight: 800; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 15px;">LE BOSS ULTIME A ÉTÉ DÉBLOQUÉ !</p>
 <p style="color: #ddd; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
 Vous avez débloqué le créateur de NathanCinema. Le site s'est métamorphosé sous la puissance de cette carte légendaire !
 </p>
@@ -1364,14 +1389,14 @@ Ce site est entièrement géré et modéré par <strong>Nathan CARER</strong> ai
 </div>
 </section>
 
-<!-- ONGLET 4: L'ÉQUIPE (GALERIE VIGNETTES 2026) -->
+<!-- ONGLET 4: L'ÉQUIPE (GALERIE VIGNETTES PANINI 2026) -->
 <section id="equipe" class="tab-content">
 <div class="team-hero-banner">
 <h2 style="font-family: 'Cinzel', serif; font-size: 2.2rem; color: #fff; text-shadow: 0 0 15px var(--gold-primary);">
 <i class="fa-solid fa-crown" style="color: var(--gold-primary);"></i> LE HALL DES LÉGENDES
 </h2>
 <p style="color: var(--text-muted); font-size: 1rem; max-width: 650px; margin: 10px auto 0 auto;">
-Collectionnez les mini-vignettes officielles de l'équipe technique en validant votre présence quotidiennement !
+Collectionnez les mini-vignettes Panini 2026 officielles de l'équipe technique en validant votre présence quotidiennement !
 </p>
 </div>
 
@@ -1436,36 +1461,54 @@ Collectionnez les mini-vignettes officielles de l'équipe technique en validant 
 <p id="validate-status-txt" style="font-size: 0.8rem; color: var(--gold-primary); margin-top: 8px; font-weight: 600;"></p>
 </div>
 
-<!-- GALERIE DES MINI-VIGNETTES 2026 -->
-<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 10px;"><i class="fa-solid fa-layer-group"></i> Galerie de Vignettes Collector</h3>
+<!-- GALERIE DES MINI-VIGNETTES PANINI 2026 -->
+<h3 style="font-family: 'Cinzel', serif; color: var(--gold-primary); margin-bottom: 10px;"><i class="fa-solid fa-layer-group"></i> Galerie de Vignettes Panini Collector</h3>
 
 <div class="vignettes-grid">
 
-<!-- VIGNETTE NATHAN CARER -->
-<div class="vignette-card gold-boss locked" id="vignette-boss" onclick="openVignetteDetails('Nathan CARER', 'Légendaire / Fondateur', '100 Validations', 'fa-crown', 'Créateur ultime de la plateforme NathanCinema, réalisateur et visionnaire du projet.', '#01')">
-<span class="panini-badge">#01 LÉGENDAIRE</span>
+<!-- VIGNETTE BOSS FINAL - NATHAN CARER -->
+<div class="vignette-card gold-boss locked" id="vignette-boss" onclick="openVignetteDetails('Nathan CARER', 'Fondateur & Boss Final', '1 Validation', 'fa-crown', 'Créateur ultime de la plateforme NathanCinema, réalisateur et visionnaire du projet.', '#01')">
+<span class="panini-badge">#01 BOSS</span>
 <div class="vignette-img"><i class="fa-solid fa-crown"></i></div>
 <div class="vignette-title">Nathan CARER</div>
-<div class="vignette-role">Légendaire / Fondateur</div>
-<div class="vignette-req" id="req-boss"><i class="fa-solid fa-lock"></i> 100 Validations</div>
+<div class="vignette-role">Boss Final / Fondateur</div>
+<div class="vignette-req" id="req-boss"><i class="fa-solid fa-lock"></i> 1 Validation</div>
 </div>
 
 <!-- VIGNETTE 2 - CO-RÉALISATRICE LOUISE LE PANSE -->
-<div class="vignette-card locked" id="vignette-v2" onclick="triggerLouiseCardEffect('Louise Le Panse', 'Co-Réalisatrice', '25 Validations', 'fa-video', 'Gestion des plannings de tournage et direction d artist.', '#02')">
+<div class="vignette-card locked" id="vignette-v2" onclick="triggerLouiseCardEffect('Louise Le Panse', 'Co-Réalisatrice', '1 Validation', 'fa-video', 'Gestion des plannings de tournage et direction d artist.', '#02')">
 <span class="panini-badge">#02 PROD</span>
 <div class="vignette-img"><i class="fa-solid fa-video"></i></div>
 <div class="vignette-title" id="v2-title-text">Louise Le Panse</div>
 <div class="vignette-role" id="v2-role-text">Co-Réalisatrice</div>
-<div class="vignette-req" id="req-v2"><i class="fa-solid fa-lock"></i> 25 Validations</div>
+<div class="vignette-req" id="req-v2"><i class="fa-solid fa-lock"></i> 1 Validation</div>
 </div>
 
 <!-- VIGNETTE 3 - DESSINATRICE ENORA MARTEL -->
-<div class="vignette-card locked" id="vignette-v3" onclick="triggerEnoraCardEffect('Enora Martel', 'Dessinatrice', '25 Validations', 'fa-palette', 'Création des storyboards et univers visuel.', '#03')">
+<div class="vignette-card locked" id="vignette-v3" onclick="triggerEnoraCardEffect('Enora Martel', 'Dessinatrice', '1 Validation', 'fa-palette', 'Création des storyboards et univers visuel.', '#03')">
 <span class="panini-badge">#03 ART</span>
 <div class="vignette-img"><i class="fa-solid fa-palette"></i></div>
 <div class="vignette-title">Enora Martel</div>
 <div class="vignette-role">Dessinatrice</div>
-<div class="vignette-req" id="req-v3"><i class="fa-solid fa-lock"></i> 25 Validations</div>
+<div class="vignette-req" id="req-v3"><i class="fa-solid fa-lock"></i> 1 Validation</div>
+</div>
+
+<!-- VIGNETTE 4 - INGENIEUR SON -->
+<div class="vignette-card locked" id="vignette-v4" onclick="openVignetteDetails('Membre Équipe', 'Ingénieur du Son', '1 Validation', 'fa-microphone-lines', 'Expert du mixage, de la prise de son directe et du design sonore.', '#04')">
+<span class="panini-badge">#04 AUDIO</span>
+<div class="vignette-img"><i class="fa-solid fa-microphone-lines"></i></div>
+<div class="vignette-title">Vignette Mystère</div>
+<div class="vignette-role">Ingénieur du Son</div>
+<div class="vignette-req" id="req-v4"><i class="fa-solid fa-lock"></i> 1 Validation</div>
+</div>
+
+<!-- VIGNETTE 5 - ACTEUR RIWAN PICOLLEC (50 VALIDATIONS) -->
+<div class="vignette-card locked" id="vignette-v5" onclick="triggerRiwanCardEffect('Riwan Picollec', 'Acteur Légendaire', '50 Validations', 'fa-masks-theater', 'Petite dédicace personnelle entre potes : Un grand merci mon pote pour tout la force et le soutien sur le projet ! Tu gères grave ! 🔥🎬', '#05')">
+<span class="panini-badge">#05 ACT</span>
+<div class="vignette-img"><i class="fa-solid fa-masks-theater"></i></div>
+<div class="vignette-title">Riwan Picollec</div>
+<div class="vignette-role">Acteur</div>
+<div class="vignette-req" id="req-v5"><i class="fa-solid fa-lock"></i> 50 Validations</div>
 </div>
 
 </div>
@@ -1540,13 +1583,13 @@ Vous êtes désormais inscrit VIP à la newsletter NathanCinema. Vous recevrez t
 </div>
 </div>
 
-<!-- MODALE DÉTAIL VIGNETTE COLLECTOR - CARTE COMPLÈTE EN TAILLE NORMALE -->
+<!-- MODALE DÉTAIL VIGNETTE COLLECTOR - CARTE PANINI COMPLÈTE EN TAILLE NORMALE -->
 <div id="vignette-modal" class="modal">
 <div class="modal-content" style="background: transparent; border: none; box-shadow: none; text-align: center; max-width: 450px;">
 <span class="close-modal" onclick="closeVignetteModal()" style="color: var(--gold-primary); font-size: 2rem;">×</span>
 
 <div class="panini-large-card">
-<span class="panini-badge" id="v-modal-badge" style="font-size: 0.8rem; padding: 4px 10px;">#01 COLLECTOR</span>
+<span class="panini-badge" id="v-modal-badge" style="font-size: 0.8rem; padding: 4px 10px;">#01 PANINI</span>
 <div class="panini-large-img" id="v-modal-img"></div>
 <h2 style="font-family: 'Cinzel', serif; color: #fff; font-size: 2rem; text-shadow: 0 0 15px var(--gold-primary);" id="v-modal-title"></h2>
 <p style="color: var(--gold-primary); font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 1rem; margin-top: 5px; margin-bottom: 15px;" id="v-modal-role"></p>
@@ -1691,6 +1734,37 @@ osc.stop(now + (i * 0.05) + 0.2);
 } catch(e) {}
 }
 
+// EFFET SONORE : FEU & ÉCLATS (RIWAN)
+function playFireSound() {
+try {
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const now = audioCtx.currentTime;
+
+const bufferSize = audioCtx.sampleRate * 0.6;
+const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+const data = buffer.getChannelData(0);
+for (let i = 0; i < bufferSize; i++) {
+data[i] = Math.random() * 2 - 1;
+}
+const noise = audioCtx.createBufferSource();
+noise.buffer = buffer;
+
+const noiseFilter = audioCtx.createBiquadFilter();
+noiseFilter.type = 'bandpass';
+noiseFilter.frequency.setValueAtTime(600, now);
+noiseFilter.Q.setValueAtTime(3, now);
+
+const noiseGain = audioCtx.createGain();
+noiseGain.gain.setValueAtTime(0.8, now);
+noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+
+noise.connect(noiseFilter);
+noiseFilter.connect(noiseGain);
+noiseGain.connect(audioCtx.destination);
+noise.start(now);
+} catch(e) {}
+}
+
 // SON DE DÉBLOCAGE DE VIGNETTE STANDARD
 function playCardUnlockSound() {
 try {
@@ -1714,7 +1788,7 @@ osc.stop(now + 0.3);
 } catch(e) {}
 }
 
-// SON EXTRÊME ET INCROYABLE POUR NATHAN CARER
+// SON EXTRÊME ET INCROYABLE POUR NATHAN CARER LE BOSS
 function playBossNuclearSound() {
 try {
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2229,14 +2303,14 @@ localStorage.setItem('nc_users', JSON.stringify(users));
 
 checkUserState();
 
-if (currentUser.validations >= 100) {
+if (currentUser.validations >= 1) {
 triggerBossExplosionSequence();
 } else {
 triggerStandardCardUnlockAnimation();
 }
 }
 
-// ANIMATION DÉBLOCAGE APOCALYPTIQUE DE NATHAN CARER
+// ANIMATION DÉBLOCAGE APOCALYPTIQUE DU BOSS NATHAN CARER
 function triggerBossExplosionSequence() {
 playBossNuclearSound();
 
@@ -2282,16 +2356,16 @@ alert("Présence validée pour aujourd'hui ! +1 Validation.");
 function updateVignettesDisplay() {
 const val = currentUser ? (currentUser.validations || 0) : 0;
 
-toggleVignetteStatus('vignette-boss', 'req-boss', val >= 100, 100);
-toggleVignetteStatus('vignette-v2', 'req-v2', val >= 25, 25);
-toggleVignetteStatus('vignette-v3', 'req-v3', val >= 25, 25);
+toggleVignetteStatus('vignette-boss', 'req-boss', val >= 1, 1);
+toggleVignetteStatus('vignette-v2', 'req-v2', val >= 1, 1);
+toggleVignetteStatus('vignette-v3', 'req-v3', val >= 1, 1);
+toggleVignetteStatus('vignette-v4', 'req-v4', val >= 1, 1);
+toggleVignetteStatus('vignette-v5', 'req-v5', val >= 50, 50);
 }
 
 function toggleVignetteStatus(cardId, reqId, isUnlocked, reqCount) {
 const card = document.getElementById(cardId);
 const req = document.getElementById(reqId);
-if(!card || !req) return;
-
 if(isUnlocked) {
 if(card.classList.contains('locked')) {
 card.classList.add('unlocked-anim');
@@ -2311,7 +2385,7 @@ req.style.borderColor = 'rgba(255,255,255,0.08)';
 }
 }
 
-// DÉCLENCHEMENT D'ANIMATION ET D'EFFET DES CARTES LOUISE & ENORA
+// DÉCLENCHEMENT D'ANIMATION ET D'EFFET DES CARTES LOUISE, ENORA & RIWAN
 function triggerLouiseCardEffect(title, role, reqTxt, iconClass, desc, badgeNo) {
 const card = document.getElementById('vignette-v2');
 if(card.classList.contains('locked')) {
@@ -2366,6 +2440,39 @@ card.classList.remove('enora-anim-active');
 }, 1200);
 }
 
+function triggerRiwanCardEffect(title, role, reqTxt, iconClass, desc, badgeNo) {
+const card = document.getElementById('vignette-v5');
+if(card.classList.contains('locked')) {
+alert("Cette vignette collector est verrouillée ! Vous devez accumuler " + reqTxt + " pour pouvoir la consulter.");
+return;
+}
+
+playFireSound();
+card.classList.add('riwan-anim-active');
+
+// Génération de particules de flammes explosives
+for (let i = 0; i < 50; i++) {
+const flame = document.createElement('div');
+flame.className = 'flame-particle';
+const rect = card.getBoundingClientRect();
+flame.style.left = (rect.left + rect.width / 2) + 'px';
+flame.style.top = (rect.top + rect.height / 2) + 'px';
+
+const angle = Math.random() * Math.PI * 2;
+const dist = 80 + Math.random() * 180;
+flame.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+flame.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+
+document.body.appendChild(flame);
+setTimeout(() => flame.remove(), 900);
+}
+
+setTimeout(() => {
+openVignetteDetails(title, role, reqTxt, iconClass, desc, badgeNo);
+card.classList.remove('riwan-anim-active');
+}, 1200);
+}
+
 function openVignetteDetails(title, role, reqTxt, iconClass, desc, badgeNo) {
 const card = event ? event.currentTarget : null;
 if(card && card.classList.contains('locked')) {
@@ -2374,7 +2481,7 @@ return;
 }
 
 playCardUnlockSound();
-document.getElementById('v-modal-badge').innerText = badgeNo || '#01 COLLECTOR';
+document.getElementById('v-modal-badge').innerText = badgeNo || '#01 PANINI';
 document.getElementById('v-modal-img').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
 document.getElementById('v-modal-title').innerText = title;
 document.getElementById('v-modal-role').innerText = role;
