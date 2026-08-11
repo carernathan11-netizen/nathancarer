@@ -37,17 +37,20 @@
             color: var(--text-main);
             overflow-x: hidden;
             min-height: 100vh;
-            transition: max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
+            transition: width 0.3s ease, max-width 0.3s ease, margin 0.3s ease, border-radius 0.3s ease;
         }
 
         /* --- MODES DE LECTURE (PC / TABLETTE / TÉLÉPHONE) --- */
         body.mode-pc {
+            width: 100% !important;
             max-width: 100% !important;
             margin: 0 auto !important;
             border: none !important;
+            border-radius: 0 !important;
         }
 
         body.mode-tablette {
+            width: 100% !important;
             max-width: 768px !important;
             margin: 20px auto !important;
             border: 2px solid var(--border-gold) !important;
@@ -56,7 +59,8 @@
         }
 
         body.mode-telephone {
-            max-width: 385px !important;
+            width: 100% !important;
+            max-width: 375px !important;
             margin: 20px auto !important;
             border: 2px solid var(--border-gold) !important;
             border-radius: 30px !important;
@@ -329,6 +333,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .logo {
@@ -352,6 +358,8 @@
             padding: 6px;
             border-radius: 30px;
             border: 1px solid var(--glass-border);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .nav-btn {
@@ -437,7 +445,7 @@
         /* --- CARTE DE PROJET --- */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 30px;
         }
 
@@ -505,6 +513,7 @@
             font-size: 0.85rem;
             color: var(--gold-primary);
             margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
         .card-meta span {
